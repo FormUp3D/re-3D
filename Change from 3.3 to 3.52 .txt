@@ -1,0 +1,85 @@
+Latest Version of Marlin for Gigabot
+
+Changes:
+1) Updated to latest version of Marlin - Improved SD support for Viki!!!
+2) Enabled thermal runaway protection in firmware
+3) Enabled digipots for motor drivers
+4) Enabled EEPROM updates through G-code
+5) Added menu to Viki: "Auto Home X, Y"
+6) Updated "Change Filament" command (M600)
+
+Configuration.h
+line 85 #define MOTHERBOARD 67
+line 89 "Gigabot Ready"
+line 300 #define THERMAL_RUNAWAY_PROTECTION_BED_PERIOD 30 //in seconds
+line 301 #define THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS 4 // in degree Celsius
+line 379 #define X_MAX_POS 605
+line 383 #define Z_MAX_POS 602 
+line 500 #define DEFAULT_AXIS_STEPS_PER_UNIT   {118.52,118.52,4031.5,1850} 
+line 537 #define EEPROM_SETTINGS (uncomment)
+line 540 #define EEPROM_CHITCHAT (uncomment)
+
+Configuration_adv.h
+line 89 uncomment use endstops only for homing.
+line 232 #define DEFAULT_STEPPER_DEACTIVE_TIME 600 // was 60
+line 277 #define DIGIPOT_I2C
+line 279 #define DIGIPOT_I2C_NUM_CHANNELS 5
+line 281 #define DIGIPOT_I2C_MOTOR_CURRENTS {1.68, 2.2, 2.0, 1.68, 1.68}
+line 427 #define FILAMENTCHANGE_ZADD 5 // was 10
+line 429 #define FILAMENTCHANGE_FINALRETRACT -60 // was 100
+
+Ultralcd.cpp
+insert line 569
+MENU_ITEM(gcode, "Auto Home X, Y", PSTR("G28 X0 Y0"));
+
+Marlin_main.cpp
+line 3479 change 60 to 120
+line 3525 current_position[E_AXIS]=target[E_AXIS]-5; //added the -5
+
+Out of Filament Detection (Beta)
+http://forums.reprap.org/read.php?1,297350,page=1
+in pins.h 
+Line 601 #define PAUSE_PIN 2 
+
+in Marlin.h 
+add line #189 void pause();  find void kill(); and add after it
+
+in Marlin_main.cpp 
+add line #512 setup_pausepin(); find void setup() and after setup_killpin(); add
+
+then find void manage_inactivity() then find 
+#if defined(KILL_PIN) && KILL_PIN > -1
+if( 0 == READ(KILL_PIN) )
+kill();
+#endif
+
+and after it add lines 4217-4220
+
+#if defined(PAUSE_PIN) && PAUSE_PIN > -1
+if( 0 == READ(PAUSE_PIN) )
+pause();
+else 
+pause_switch = 0;
+#endif
+
+finally line #194-209
+
+void setup_pausepin()
+{
+#if defined(PAUSE_PIN) && PAUSE_PIN > -1
+pinMode(PAUSE_PIN,INPUT);
+WRITE(PAUSE_PIN,HIGH);
+#endif
+}
+
+void pause()
+{
+if (pause_switch == 0) {
+enquecommand("M600");
+pause_switch = 1;
+}
+}
+
+line #355 add: static int pause_switch = 0;
+
+
