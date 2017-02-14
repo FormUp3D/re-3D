@@ -23,7 +23,7 @@
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(Fiedler, GB2.0 V3.52 NON Heated Bed)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(Fiedler, GB2.0 V3.52)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -144,7 +144,7 @@
 #define TEMP_SENSOR_0 1
 #define TEMP_SENSOR_1 0
 #define TEMP_SENSOR_2 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED -1
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -166,7 +166,7 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 255
+#define HEATER_0_MAXTEMP 250
 #define HEATER_1_MAXTEMP 255
 #define HEATER_2_MAXTEMP 255
 #define BED_MAXTEMP 150
@@ -211,9 +211,9 @@
 //    #define  DEFAULT_Kd 440
 
 // Gigabot 2 (24 volts) 
-    #define  DEFAULT_Kp 16.22
-    #define  DEFAULT_Ki 1.65
-    #define  DEFAULT_Kd 39.85
+    #define  DEFAULT_Kp 20.1
+    #define  DEFAULT_Ki 2.03
+    #define  DEFAULT_Kd 49.73
 
 #endif // PIDTEMP
 
@@ -290,15 +290,15 @@ your extruder heater takes 2 minutes to hit the target on heating.
 // uncomment the 2 defines below:
 
 // Parameters for all extruder heaters
-#define THERMAL_RUNAWAY_PROTECTION_PERIOD 40 //in seconds
-#define THERMAL_RUNAWAY_PROTECTION_HYSTERESIS 4 // in degree Celsius
+#define THERMAL_RUNAWAY_PROTECTION_PERIOD 60 //in seconds
+#define THERMAL_RUNAWAY_PROTECTION_HYSTERESIS 10 // in degree Celsius
 
 // If you want to enable this feature for your bed heater,
 // uncomment the 2 defines below:
 
 // Parameters for the bed heater
-#define THERMAL_RUNAWAY_PROTECTION_BED_PERIOD 30 //in seconds
-#define THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS 4 // in degree Celsius
+#define THERMAL_RUNAWAY_PROTECTION_BED_PERIOD 60 //in seconds
+#define THERMAL_RUNAWAY_PROTECTION_BED_HYSTERESIS 10 // in degree Celsius
 //===========================================================================
 
 
@@ -380,7 +380,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define X_MIN_POS 0
 #define Y_MAX_POS 615
 #define Y_MIN_POS 0
-#define Z_MAX_POS 602
+#define Z_MAX_POS 600
 #define Z_MIN_POS 0
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
@@ -498,7 +498,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // default settings
 
 #define DEFAULT_AXIS_STEPS_PER_UNIT   {118.52,118.52,4031.5,1850} // default steps per unit for Ultimaker
-#define DEFAULT_MAX_FEEDRATE          {175, 175, 5, 60}    // (mm/sec)
+#define DEFAULT_MAX_FEEDRATE          {165, 165, 5, 60}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION          1500    // X, Y, Z and E max acceleration in mm/s^2 for printing moves
