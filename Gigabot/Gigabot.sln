@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Marlin", "..\Marlin\Marlin\Marlin.vcxproj", "{3A1F9698-E014-4AD7-866E-653CF9995511}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Python_GUI", "Python_GUI\Python_GUI.pyproj", "{CEE80224-4A70-431A-AE31-CF610B9C69E8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Win32 = Debug|Win32
+		Release|Any CPU = Release|Any CPU
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Debug|Win32.Build.0 = Debug|Win32
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Release|Any CPU.ActiveCfg = Release|Win32
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Release|Win32.ActiveCfg = Release|Win32
+		{3A1F9698-E014-4AD7-866E-653CF9995511}.Release|Win32.Build.0 = Release|Win32
+		{CEE80224-4A70-431A-AE31-CF610B9C69E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEE80224-4A70-431A-AE31-CF610B9C69E8}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{CEE80224-4A70-431A-AE31-CF610B9C69E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEE80224-4A70-431A-AE31-CF610B9C69E8}.Release|Win32.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -43,6 +43,7 @@
   extern int absPreheatHotendTemp;
   extern int absPreheatHPBTemp;
   extern int absPreheatFanSpeed;
+  extern uint32_t encoderPosition;
   
   extern bool cancel_heatup;
   

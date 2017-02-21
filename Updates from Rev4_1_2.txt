@@ -1,0 +1,9 @@
+Gigabot firmware updates Rev 4.1.3
+
+1) SD buffer increased from 16 -> 32
+2) Splash screen time reduced on Viki
+3) Homing routine before and after filament change
+4) Decreased Minimum extrusion temp from 170 -> 120C for low melt materials
+5) Add Extruder 2 to move axis menu on Viki
+6) Adjust Move Axis command up higher on Prepare menu
+7) Added in filament change command under Prepare menu

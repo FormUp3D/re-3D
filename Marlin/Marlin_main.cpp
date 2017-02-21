@@ -341,6 +341,10 @@ bool cancel_heatup = false ;
 const char errormagic[] PROGMEM = "Error:";
 const char echomagic[] PROGMEM = "echo:";
 
+#if FILAMENT_DETECTION_EXT0_PIN > -1 || FILAMENT_DETECTION_EXT1_PIN > -1 || FILAMENT_DETECTION_EXT2_PIN > -1
+	bool Out_of_Filament_Detected = false;
+#endif
+
 //===========================================================================
 //=============================Private Variables=============================
 //===========================================================================
@@ -363,6 +367,10 @@ static bool fromsd[BUFSIZE];
 static int bufindr = 0;
 static int bufindw = 0;
 static int buflen = 0;
+
+static bool Delayed_Enqueing = false;
+static char tmpcmdbuffer[MAX_CMD_SIZE] = {0};
+
 //static int i = 0;
 static char serial_char;
 static int serial_count = 0;
@@ -435,7 +443,34 @@ void serial_echopair_P(const char *s_P, unsigned long v)
     }
   }
 #endif //!SDSUPPORT
+// Keep calling this function in a loop and it will beep 
+void Annoying_Beep()
+{
+	static uint8_t cnt = 0;
 
+	cnt++;
+	manage_heater();
+	manage_inactivity();
+	lcd_update();
+	if(cnt==0)
+	{
+#if BEEPER > 0
+		SET_OUTPUT(BEEPER);
+
+		WRITE(BEEPER,HIGH);
+		delay(3);
+		WRITE(BEEPER,LOW);
+		delay(3);
+#else
+#if !defined(LCD_FEEDBACK_FREQUENCY_HZ) || !defined(LCD_FEEDBACK_FREQUENCY_DURATION_MS)
+		lcd_buzz(1000/6,100);
+#else
+		lcd_buzz(LCD_FEEDBACK_FREQUENCY_DURATION_MS,LCD_FEEDBACK_FREQUENCY_HZ);
+#endif
+#endif
+	}
+
+}
 //adds an command to the main command buffer
 //thats really done in a non-safe way.
 //needs overworking someday
@@ -484,6 +519,31 @@ void setup_homepin(void)
    SET_INPUT(HOME_PIN);
    WRITE(HOME_PIN,HIGH);
 #endif
+}
+
+void setup_Filament_Detection_pins()
+{
+#if FILAMENT_DETECTION_EXT0_PIN > -1 || FILAMENT_DETECTION_EXT1_PIN > -1 || FILAMENT_DETECTION_EXT2_PIN > -1
+
+
+	Out_of_Filament_Detected = false;
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT0_PIN) && FILAMENT_DETECTION_EXT0_PIN > -1
+	pinMode(FILAMENT_DETECTION_EXT0_PIN,INPUT);
+	WRITE(FILAMENT_DETECTION_EXT0_PIN,HIGH);
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT1_PIN) && FILAMENT_DETECTION_EXT1_PIN > -1
+	pinMode(FILAMENT_DETECTION_EXT1_PIN,INPUT);
+	WRITE(FILAMENT_DETECTION_EXT1_PIN,HIGH);
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT2_PIN) && FILAMENT_DETECTION_EXT2_PIN > -1
+	pinMode(FILAMENT_DETECTION_EXT2_PIN,INPUT);
+	WRITE(FILAMENT_DETECTION_EXT2_PIN,HIGH);
+#endif
+
 }
 
 
@@ -558,6 +618,7 @@ void setup()
 {
   setup_killpin();
   setup_powerhold();
+  setup_Filament_Detection_pins();
   MYSERIAL.begin(BAUDRATE);
   SERIAL_PROTOCOLLNPGM("start");
   SERIAL_ECHO_START;
@@ -623,7 +684,38 @@ void setup()
   setup_homepin();
 }
 
+void checkFilamentExistance()
+{
 
+#if defined(FILAMENT_DETECTION_EXT0_PIN) && FILAMENT_DETECTION_EXT0_PIN > -1
+
+	if( 0 != degTargetHotend(active_extruder) && !Out_of_Filament_Detected && active_extruder == 0 
+		&& FILAMENT_DETECTION_EXT0_TRIGGER_VALUE == digitalRead(FILAMENT_DETECTION_EXT0_PIN) )
+	{
+		enquecommand("M600");
+		Out_of_Filament_Detected = true;
+	}
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT1_PIN) && FILAMENT_DETECTION_EXT1_PIN > -1
+	if( 0 != degTargetHotend(active_extruder) &&  !Out_of_Filament_Detected && active_extruder == 1 
+		&& FILAMENT_DETECTION_EXT1_TRIGGER_VALUE == digitalRead(FILAMENT_DETECTION_EXT1_PIN) )
+	{
+		enquecommand("M600");
+		Out_of_Filament_Detected = true;
+	}
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT2_PIN) && FILAMENT_DETECTION_EXT2_PIN > -1
+	if( 0 != degTargetHotend(active_extruder) && !Out_of_Filament_Detected && active_extruder == 2 
+		&& FILAMENT_DETECTION_EXT2_TRIGGER_VALUE == digitalRead(FILAMENT_DETECTION_EXT2_PIN) )
+	{
+		enquecommand("M600");
+		Out_of_Filament_Detected = true;
+	}
+#endif
+
+}
 void loop()
 {
   if(buflen < (BUFSIZE-1))
@@ -669,6 +761,7 @@ void loop()
   manage_inactivity();
   checkHitEndstops();
   lcd_update();
+  checkFilamentExistance();
 }
 
 void get_command()
@@ -3552,6 +3645,9 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
     #ifdef FILAMENTCHANGEENABLE
     case 600: //Pause for filament change X[pos] Y[pos] Z[relative lift] E[initial retract] L[later retract distance for removal]
     {
+		Out_of_Filament_Detected = false;
+		saved_feedrate = feedrate;
+		
         float target[4];
         float lastpos[4];
         target[X_AXIS]=current_position[X_AXIS];
@@ -3562,6 +3658,24 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
         lastpos[Y_AXIS]=current_position[Y_AXIS];
         lastpos[Z_AXIS]=current_position[Z_AXIS];
         lastpos[E_AXIS]=current_position[E_AXIS];
+		float lasttemp[EXTRUDERS] = {0};
+
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO("Start ");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO("Start ");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO("Start ");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO("Start ");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(feedrate);
+
+
         //retract by E
         if(code_seen('E'))
         {
@@ -3573,7 +3687,21 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             target[E_AXIS]+= FILAMENTCHANGE_FIRSTRETRACT ;
           #endif
         }
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 10, active_extruder);
+
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO("FILAMENTCHANGE_FIRSTRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO("FILAMENTCHANGE_FIRSTRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO("FILAMENTCHANGE_FIRSTRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO("FILAMENTCHANGE_FIRSTRETRACT");
+		// SERIAL_ECHO(" ");
 
         //lift Z
         if(code_seen('Z'))
@@ -3586,7 +3714,26 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
             target[Z_AXIS]+= FILAMENTCHANGE_ZADD ;
           #endif
         }
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 10, active_extruder);
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
+		// SERIAL_ECHO("\n");
+		 SERIAL_ECHO(target[Z_AXIS]);
+		 SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
+		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
+		// SERIAL_ECHO(" ");
+
+		HOMEAXIS(X);
+		HOMEAXIS(Y);
+        //finish moves
+        st_synchronize();
 
         //move xy
         if(code_seen('X'))
@@ -3610,7 +3757,22 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
           #endif
         }
 
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 50, active_extruder);
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE XY");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE XY");
+		 SERIAL_ECHO("\n");
+		 SERIAL_ECHO(target[Z_AXIS]);
+		 SERIAL_ECHO(" FILAMENTCHANGE XY");
+		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE XY");
+		// SERIAL_ECHO(" ");
+
 
         if(code_seen('L'))
         {
@@ -3623,40 +3785,193 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
           #endif
         }
 
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder);
+        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], 10, active_extruder);
+
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_FINALRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_FINALRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_FINALRETRACT");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_FINALRETRACT");
+		// SERIAL_ECHO(" ");
 
         //finish moves
         st_synchronize();
-        //disable extruder steppers so filament can be removed
-        disable_e0();
-        disable_e1();
-        disable_e2();
-        delay(100);
-        LCD_ALERTMESSAGEPGM(MSG_FILAMENTCHANGE);
-        uint8_t cnt=0;
-        while(!lcd_clicked()){
-          cnt++;
-          manage_heater();
-          manage_inactivity(true);
-          lcd_update();
-          if(cnt==0)
-          {
-          #if BEEPER > 0
-            SET_OUTPUT(BEEPER);
+        //finish moves
+        st_synchronize();
+        delay(1000);
 
-            WRITE(BEEPER,HIGH);
-            delay(3);
-            WRITE(BEEPER,LOW);
-            delay(3);
-          #else
-			#if !defined(LCD_FEEDBACK_FREQUENCY_HZ) || !defined(LCD_FEEDBACK_FREQUENCY_DURATION_MS)
-              lcd_buzz(1000/6,100);
-			#else
-			  lcd_buzz(LCD_FEEDBACK_FREQUENCY_DURATION_MS,LCD_FEEDBACK_FREQUENCY_HZ);
-			#endif
-          #endif
+		if(change_filament_triggered_by_user)
+		{
+			change_filament_triggered_by_user = false;
+			goto skip_pause;
+		}
+
+		// Disable Hotends
+		for(int i=0;i<EXTRUDERS;i++)
+		{
+			lasttemp[i] = degTargetHotend(i);
+			setTargetHotend(0,i);
+		}
+
+		//disable extruder steppers so filament can be removed
+		disable_e0();
+		disable_e1();
+		disable_e2();
+
+		switch (active_extruder)
+		{
+#if defined(FILAMENT_DETECTION_EXT0_PIN) && FILAMENT_DETECTION_EXT0_PIN > -1
+		case 0:
+			LCD_MESSAGEPGM(MSG_FILAMENTCHANGE " 1");
+			while(!lcd_clicked())
+			{
+				manage_heater();
+				lcd_update();
+				Annoying_Beep();
+			}
+			break;
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT1_PIN) && FILAMENT_DETECTION_EXT1_PIN > -1
+		case 1:
+			LCD_MESSAGEPGM(MSG_FILAMENTCHANGE " 2");
+			while(!lcd_clicked())
+			{
+				manage_heater();
+				lcd_update();
+				Annoying_Beep();
+			}
+			break;
+#endif
+
+#if defined(FILAMENT_DETECTION_EXT2_PIN) && FILAMENT_DETECTION_EXT2_PIN > -1
+		case 2:
+			LCD_MESSAGEPGM(MSG_FILAMENTCHANGE " 3");
+			while(!lcd_clicked())
+			{
+				manage_heater();
+				lcd_update();
+				Annoying_Beep();
+			}
+			break;
+#endif
+		default:
+			// This message should never happen
+			LCD_MESSAGEPGM(MSG_FILAMENTCHANGE" ?");
+			break;
+		}
+        
+		// Renable extruder motors
+		enable_e0();
+		enable_e1();
+		enable_e2();
+
+		// Renable Hotends
+		for(int i=0;i<EXTRUDERS;i++)
+			setTargetHotend(lasttemp[i], i);
+
+	skip_pause:
+
+		bool Set_back_to_lower_degrees = false;
+
+		// This is just incase the user set their value less than the min
+		if(degTargetHotend(active_extruder) < (float) EXTRUDE_MINTEMP)
+		{
+			setTargetHotend(CHANGE_FILAMENT_TEMP, active_extruder);
+			Set_back_to_lower_degrees = true;
+		}
+
+		if(setTargetedHotend(109))
+		{
+			break;
+		}
+
+		LCD_MESSAGEPGM(MSG_HEATING);
+
+      setWatch();
+      codenum = millis();
+
+      /* See if we are heating up or cooling down */
+      target_direction = isHeatingHotend(tmp_extruder); // true if heating, false if cooling
+
+      cancel_heatup = false;
+
+      #ifdef TEMP_RESIDENCY_TIME
+        long residencyStart;
+        residencyStart = -1;
+        /* continue to loop until we have reached the target temp
+          _and_ until TEMP_RESIDENCY_TIME hasn't passed since we reached it */
+        while((!cancel_heatup)&&((residencyStart == -1) ||
+              (residencyStart >= 0 && (((unsigned int) (millis() - residencyStart)) < (TEMP_RESIDENCY_TIME * 1000UL)))) ) 
+		{
+      #else
+        while ( target_direction ? (isHeatingHotend(tmp_extruder)) : (isCoolingHotend(tmp_extruder)&&(CooldownNoWait==false)) ) {
+      #endif //TEMP_RESIDENCY_TIME
+          if( (millis() - codenum) > 1000UL )
+          { //Print Temp Reading and remaining time every 1 second while heating up/cooling down
+            SERIAL_PROTOCOLPGM("T:");
+            SERIAL_PROTOCOL_F(degHotend(tmp_extruder),1);
+            SERIAL_PROTOCOLPGM(" E:");
+            SERIAL_PROTOCOL((int)tmp_extruder);
+            #ifdef TEMP_RESIDENCY_TIME
+              SERIAL_PROTOCOLPGM(" W:");
+              if(residencyStart > -1)
+              {
+                 codenum = ((TEMP_RESIDENCY_TIME * 1000UL) - (millis() - residencyStart)) / 1000UL;
+                 SERIAL_PROTOCOLLN( codenum );
+              }
+              else
+              {
+                 SERIAL_PROTOCOLLN( "?" );
+              }
+            #else
+              SERIAL_PROTOCOLLN("");
+            #endif
+            codenum = millis();
           }
+          manage_heater();
+          manage_inactivity();
+          lcd_update();
+        #ifdef TEMP_RESIDENCY_TIME
+            /* start/restart the TEMP_RESIDENCY_TIME timer whenever we reach target temp for the first time
+              or when current temp falls outside the hysteresis after target temp was reached */
+          if ((residencyStart == -1 &&  target_direction && (degHotend(tmp_extruder) >= (degTargetHotend(tmp_extruder)-TEMP_WINDOW))) ||
+              (residencyStart == -1 && !target_direction && (degHotend(tmp_extruder) <= (degTargetHotend(tmp_extruder)+TEMP_WINDOW))) ||
+              (residencyStart > -1 && labs(degHotend(tmp_extruder) - degTargetHotend(tmp_extruder)) > TEMP_HYSTERESIS) )
+          {
+            residencyStart = millis();
+          }
+        #endif //TEMP_RESIDENCY_TIME
         }
+        LCD_MESSAGEPGM(MSG_HEATING_COMPLETE);
+        starttime=millis();
+        previous_millis_cmd = millis();
+
+		LCD_MESSAGEPGM(MSG_EXTRUDE);
+
+		// Now let user advance new filament into hotend using dial knob
+		float temp_e_axis = target[E_AXIS];
+
+        while(!lcd_clicked())
+		{
+          manage_heater();
+          lcd_update();
+
+		  // allow user to feed Filament through
+		  if (encoderPosition != 0)
+		  {
+			  temp_e_axis += float((int)encoderPosition) * 0.3;
+			  encoderPosition = 0;
+			  plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], temp_e_axis, 3, active_extruder);
+		  }
+		}
 
         //return to normal
         if(code_seen('L'))
@@ -3666,15 +3981,117 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
         else
         {
           #ifdef FILAMENTCHANGE_FINALRETRACT
-            target[E_AXIS]+=(-1)*FILAMENTCHANGE_FINALRETRACT ;
+			// Undo the final retraction
+            target[E_AXIS] += (-1)* FILAMENTCHANGE_FINALRETRACT;
           #endif
+
+		  #ifdef FILAMENTCHANGE_FIRSTRETRACT
+			// Undo the first retraction
+		    target[E_AXIS] += (-1)* FILAMENTCHANGE_FIRSTRETRACT;
+		  #endif
+
+		  #ifdef FILAMENTCHANGE_LASTRETRACT
+			// Add a default amount so filament isn't leaking out after returning
+			target[E_AXIS] += FILAMENTCHANGE_LASTRETRACT;
+		  #endif
         }
+
+		// user started printer with default extruder empty
+		// Allow user the ability to change filament and then go 
+		// back to zero degress
+		if(Set_back_to_lower_degrees)
+			setTargetHotend(lasttemp[active_extruder], active_extruder);
+
         current_position[E_AXIS]=target[E_AXIS]; //the long retract of L is compensated by manual filament feeding
         plan_set_e_position(current_position[E_AXIS]);
-        plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //should do nothing
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], target[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //move xy back
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], target[E_AXIS], feedrate/60, active_extruder); //move z back
-        plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], feedrate/60, active_extruder); //final untretract
+		enable_endstops(true);
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" Feed multiply ");
+		// SERIAL_ECHO(feedmultiply);
+
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" Feed Rate ");
+		// SERIAL_ECHO(saved_feedrate);
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(feedrate);
+		
+		HOMEAXIS(X);
+		HOMEAXIS(Y);
+		
+		//finish moves
+                st_synchronize();
+		
+		//enable_endstops(false);
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" Feed Rate ");
+		// SERIAL_ECHO(saved_feedrate);
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(feedrate);
+
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" Feed Rate ");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(feedrate);
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" After_Home X ");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" After_Home Y ");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		 SERIAL_ECHO("\n");
+		 SERIAL_ECHO(" After_Home Z ");
+		 SERIAL_ECHO(target[Z_AXIS]);
+		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" After_Home E ");
+		// SERIAL_ECHO(target[E_AXIS]);
+
+		
+		// We have to update the target data
+		for (int i = 0; i < NUM_AXIS; i++)
+		target[i] = current_position[i];
+
+		lastpos[Z_AXIS]-=FILAMENTCHANGE_ZADD;
+		plan_set_position(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS]+FILAMENTCHANGE_ZADD, current_position[E_AXIS]-10);
+
+		// SERIAL_ECHO(current_position[Z_AXIS]);
+		// SERIAL_ECHO("       current position Z axis ");
+		// SERIAL_ECHO("\n");
+		
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[X_AXIS]);
+		// SERIAL_ECHO("      After_Home2 X");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Y_AXIS]);
+		// SERIAL_ECHO("       After_Home2 Y");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO("      After_Home2 Z");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[E_AXIS]);
+		// SERIAL_ECHO("      After_Home2 E");
+		// SERIAL_ECHO("\n");
+	
+		 SERIAL_ECHO(lastpos[Z_AXIS]);
+		 SERIAL_ECHO("       last position Z axis ");
+		 SERIAL_ECHO("\n");
+		//LCD_MESSAGEPGM(current_position[Z_AXIS]);
+		//delay(5000);
+
+		
+		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], lastpos[E_AXIS], 50, active_extruder); //unretract
+		//plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], target[Z_AXIS], target[E_AXIS], 30, active_extruder); //move xy back		
+		//plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], target[E_AXIS], 30, active_extruder); //move z back		
+		plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], 50, active_extruder); //final unretract
+		
+		//LCD_MESSAGEPGM(lastpos[Z_AXIS]);
+		delay(5000);
+
+		feedrate=saved_feedrate;
+		
+		LCD_MESSAGEPGM("");
     }
     break;
     #endif //FILAMENTCHANGEENABLE
@@ -4625,5 +5042,20 @@ void calculate_volumetric_multipliers() {
 	volumetric_multiplier[2] = calculate_volumetric_multiplier(filament_size[2]);
 #endif
 #endif
+}
+void setup_pausepin()
+{
+#if defined(PAUSE_PIN) && PAUSE_PIN > -1
+pinMode(PAUSE_PIN,INPUT);
+WRITE(PAUSE_PIN,HIGH);
+#endif
+}
+
+void pause()
+{
+enquecommand("M600");
+enquecommand("G4 P0");
+enquecommand("G4 P0");
+enquecommand("G4 P0");
 }
 

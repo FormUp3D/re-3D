@@ -602,8 +602,8 @@
     #define Y_STEP_PIN         60
     #define Y_DIR_PIN          61
     #define Y_ENABLE_PIN       56
-    #define Y_MIN_PIN          14
-    #define Y_MAX_PIN          15
+    #define Y_MIN_PIN          15
+    #define Y_MAX_PIN          14
 
     #define Z_STEP_PIN         46
     #define Z_DIR_PIN          48
@@ -656,7 +656,7 @@
   #endif
 
   #if MB(RAMPS_13_EFB) || MB(RAMPS_13_EFF) || MB(AZTEEG_X3)
-    #define FAN_PIN            9 // (Sprinter config)
+    #define FAN_PIN            17 // (Sprinter config)
   #elif MB(AZTEEG_X3_PRO)
     #define FAN_PIN            11 // Last Heater Pin on board
   #else
@@ -686,7 +686,7 @@
   #endif
 
   #if MB(RAMPS_13_EFB) || MB(AZTEEG_X3)
-    #define HEATER_1_PIN       -1
+    #define HEATER_1_PIN       9
   #else
     #define HEATER_1_PIN       9    // EXTRUDER 2 (FAN On Sprinter)
   #endif
@@ -707,8 +707,8 @@
     #define HEATER_2_PIN       -1
   #endif
 
-  #define TEMP_0_PIN         13   // ANALOG NUMBERING
-  #define TEMP_1_PIN         15   // ANALOG NUMBERING
+  #define TEMP_0_PIN         11   // ANALOG NUMBERING
+  #define TEMP_1_PIN         4   // ANALOG NUMBERING
   #if MB(AZTEEG_X3_PRO)
     #define TEMP_2_PIN         12   // ANALOG NUMBERING
     #define TEMP_3_PIN         11   // ANALOG NUMBERING
@@ -729,7 +729,7 @@
     #endif
   #endif
 
-  #define TEMP_BED_PIN       14   // ANALOG NUMBERING
+  #define TEMP_BED_PIN       3   // ANALOG NUMBERING
 
   #ifdef NUM_SERVOS
     #define SERVO0_PIN         11
@@ -753,8 +753,8 @@
 
   #ifdef TEMP_STAT_LEDS
     #if MB(AZTEEG_X3)
-      #define STAT_LED_RED       6
-      #define STAT_LED_BLUE     11
+      #define STAT_LED_RED      64
+      #define STAT_LED_BLUE     63
     #endif
   #endif
 
@@ -789,6 +789,35 @@
         #define BTN_ENC -1
         #define LCD_SDSS 53
         #define SDCARDDETECT 49
+      #elif defined(VIKI2) || defined(miniVIKI)
+         #if MOTHERBOARD == 67 //Azteeg_X3
+           #define BEEPER 33         
+           // Pins for DOGM SPI LCD Support
+           #define DOGLCD_A0  31
+           #define DOGLCD_CS  32
+           #define LCD_SCREEN_ROT_180
+ 
+           //The encoder and click button
+           #define BTN_EN1 22
+           #define BTN_EN2 7
+           #define BTN_ENC 12  //the click switch
+     
+           #define SDCARDDETECT -1
+         #endif
+         #if MOTHERBOARD == 68 //Azteeg_X3_Pro
+           #define BEEPER 33         
+           // Pins for DOGM SPI LCD Support
+           #define DOGLCD_A0  44
+           #define DOGLCD_CS  45
+           #define LCD_SCREEN_ROT_180
+        
+           //The encoder and click button
+           #define BTN_EN1 22
+           #define BTN_EN2 7
+           #define BTN_ENC 39  //the click switch
+      
+           #define SDCARDDETECT -1
+         #endif
       #else
         //arduino pin which triggers an piezzo beeper
         #define BEEPER 33  // Beeper on AUX-4
@@ -2970,3 +2999,29 @@ DaveX plan for Teensylu/printrboard-type pinouts (ref teensylu & sprinter) for a
                         analogInputToDigitalPin(TEMP_0_PIN), analogInputToDigitalPin(TEMP_1_PIN), analogInputToDigitalPin(TEMP_2_PIN), analogInputToDigitalPin(TEMP_BED_PIN) }
 
 #endif //__PINS_H
+// Overwrite any if then... worst best way to do this...
+//#define TEMP_BED_PIN        11 
+#if MOTHERBOARD == 67
+  #define BTN_EN1 22	
+  #define BTN_EN2 7	
+  #define BTN_ENC 12      // the click
+  #define PAUSE_PIN 2 // filament out detection pin... (X-max endstop location)
+#endif
+#if MOTHERBOARD == 68
+  #define BTN_EN1 22
+  #define BTN_EN2  7
+  #define BTN_ENC 39
+#endif
+
+#ifdef FILAMENTCHANGEENABLE
+	#define FILAMENT_DETECTION_EXT0_PIN                      47
+	#define FILAMENT_DETECTION_EXT0_TRIGGER_VALUE            1   // Either one or zero depending if you use a NO or NC
+	#if EXTRUDERS > 1
+		#define FILAMENT_DETECTION_EXT1_PIN                  39
+		#define FILAMENT_DETECTION_EXT1_TRIGGER_VALUE        1   // Either one or zero depending if you use a NO or NC
+	#if EXTRUDERS > 2
+		#define FILAMENT_DETECTION_EXT2_PIN                  -1
+		#define FILAMENT_DETECTION_EXT1_TRIGGER_VALUE        1   // Either one or zero depending if you use a NO or NC
+	#endif
+	#endif
+#endif // FILAMENTCHANGEENABLE

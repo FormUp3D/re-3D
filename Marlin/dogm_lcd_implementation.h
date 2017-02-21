@@ -33,7 +33,7 @@
 #define LCD_CLICKED (buttons&EN_C)
 #endif
 
-#include <U8glib.h>
+#include "U8glib.h"
 #include "DOGMbitmaps.h"
 #include "dogm_font_data_marlin.h"
 #include "ultralcd.h"
@@ -97,13 +97,13 @@ static void lcd_implementation_init()
 	//  pinMode(17, OUTPUT);	// Enable LCD backlight
 	//  digitalWrite(17, HIGH);
 	
-	u8g.firstPage();
-	do {
-		u8g.setFont(u8g_font_6x10_marlin);
-		u8g.setColorIndex(1);
-		u8g.drawBox (0, 0, u8g.getWidth(), u8g.getHeight());
-		u8g.setColorIndex(1);
-	   } while( u8g.nextPage() );
+//	u8g.firstPage();
+//	do {
+//		u8g.setFont(u8g_font_6x10_marlin);
+//		u8g.setColorIndex(1);
+//		u8g.drawBox (0, 0, u8g.getWidth(), u8g.getHeight());
+//		u8g.setColorIndex(1);
+//	   } while( u8g.nextPage() );
 
 #ifdef LCD_SCREEN_ROT_90
 	u8g.setRot90();	// Rotate screen by 90°
@@ -124,20 +124,21 @@ static void lcd_implementation_init()
 			u8g.drawBitmapP(0,0,START_BMPBYTEWIDTH,START_BMPHEIGHT,start_bmp);
 			// Welcome message
 			u8g.setFont(u8g_font_6x10_marlin);
-			u8g.drawStr(62,10,"MARLIN"); 
+			u8g.drawStr(62,10,"GIGABOT"); 
 			u8g.setFont(u8g_font_5x8);
-			u8g.drawStr(62,19,"V1.0.2");
+			u8g.drawStr(62,19,"V4.1.3");
 			u8g.setFont(u8g_font_6x10_marlin);
-			u8g.drawStr(62,28,"by ErikZalm");
-			u8g.drawStr(62,41,"DOGM128 LCD");
+			u8g.drawStr(62,28,"by Chief");
+			u8g.drawStr(62,41,"Hacker");
 			u8g.setFont(u8g_font_5x8);
-			u8g.drawStr(62,48,"enhancements");
+			u8g.drawStr(62,48," ");
 			u8g.setFont(u8g_font_5x8);
-			u8g.drawStr(62,55,"by STB, MM");
-			u8g.drawStr(62,61,"uses u");
-			u8g.drawStr90(92,57,"8");
-			u8g.drawStr(100,61,"glib");
+			u8g.drawStr(62,55," ");
+			u8g.drawStr(62,61," ");
+			u8g.drawStr90(92,57," ");
+			u8g.drawStr(100,61," ");
 	   } while( u8g.nextPage() );
+delay(0);
 }
 
 static void lcd_implementation_clear()
