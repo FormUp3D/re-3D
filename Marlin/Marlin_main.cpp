@@ -1291,7 +1291,7 @@ static void homeaxis(int axis) {
 
 #ifndef Z_PROBE_SLED
     // Engage Servo endstop if enabled
-    #ifdef SERVO_ENDSTOPS
+                                                                                                                                                                                     #ifdef SERVO_ENDSTOPS
       #if defined (ENABLE_AUTO_BED_LEVELING) && (PROBE_SERVO_DEACTIVATION_DELAY > 0)
         if (axis==Z_AXIS) {
           engage_z_probe();
