@@ -36,7 +36,7 @@
 //#define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE // will be shown during bootup in line 2
 
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(GB3 V4.1.3 DE)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(GB3 V4.1.3 SE XL)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -183,9 +183,9 @@
 //    #define  DEFAULT_Kd 440
 
 // Gigabot 3 (24 volts) 
-    #define  DEFAULT_Kp 31.29
-    #define  DEFAULT_Ki 4.29
-    #define  DEFAULT_Kd 57.03
+    #define  DEFAULT_Kp 32.0
+    #define  DEFAULT_Ki 4.0
+    #define  DEFAULT_Kd 74.0
 #endif // PIDTEMP
 
 // Bed Temperature Control
@@ -347,9 +347,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define max_software_endstops true  // If true, axis won't move to coordinates greater than the defined lengths below.
 
 // Travel limits after homing
-#define X_MAX_POS 600
+#define X_MAX_POS 590
 #define X_MIN_POS 0
-#define Y_MAX_POS 615
+#define Y_MAX_POS 772
 #define Y_MIN_POS 0
 #define Z_MAX_POS 602
 #define Z_MIN_POS 0

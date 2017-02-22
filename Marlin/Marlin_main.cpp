@@ -1318,7 +1318,7 @@ static void homeaxis(int axis) {
 #ifdef DELTA
     feedrate = homing_feedrate[axis]/10;
 #else
-    feedrate = homing_feedrate[axis]/2 ;
+    feedrate = homing_feedrate[axis]/4 ;
 #endif
     plan_buffer_line(destination[X_AXIS], destination[Y_AXIS], destination[Z_AXIS], destination[E_AXIS], feedrate/60, active_extruder);
     st_synchronize();

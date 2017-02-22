@@ -282,7 +282,7 @@
 // Number of channels available for I2C digipot, For Azteeg X3 Pro we have 8
 #define DIGIPOT_I2C_NUM_CHANNELS 5
 // actual motor currents in Amps, need as many here as DIGIPOT_I2C_NUM_CHANNELS
-#define DIGIPOT_I2C_MOTOR_CURRENTS {1.68, 2.3, 2.3, 1.8, 1.8}
+#define DIGIPOT_I2C_MOTOR_CURRENTS {1.8, 2.35, 2.3, 1.8, 1.8}
 
 //===========================================================================
 //=============================Additional Features===========================

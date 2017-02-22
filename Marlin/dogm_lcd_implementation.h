@@ -126,7 +126,7 @@ static void lcd_implementation_init()
 			u8g.setFont(u8g_font_6x10_marlin);
 			u8g.drawStr(62,10,"GIGABOT"); 
 			u8g.setFont(u8g_font_5x8);
-			u8g.drawStr(62,19,"V4.1.3");
+			u8g.drawStr(62,19,"V4.1.3 DE XL");
 			u8g.setFont(u8g_font_6x10_marlin);
 			u8g.drawStr(62,28,"by Chief");
 			u8g.drawStr(62,41,"Hacker");
