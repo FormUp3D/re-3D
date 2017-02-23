@@ -707,7 +707,7 @@
     #define HEATER_2_PIN       -1
   #endif
 
-  #define TEMP_0_PIN         13   // ANALOG NUMBERING
+  #define TEMP_0_PIN         4   // ANALOG NUMBERING //TC2 = 4
   #define TEMP_1_PIN         4   // ANALOG NUMBERING
   #if MB(AZTEEG_X3_PRO)
     #define TEMP_2_PIN         12   // ANALOG NUMBERING
