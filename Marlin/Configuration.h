@@ -36,7 +36,7 @@
 //#define STRING_SPLASH_LINE2 STRING_DISTRIBUTION_DATE // will be shown during bootup in line 2
 
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
-#define STRING_CONFIG_H_AUTHOR "(V4.1.2 GB2 FD)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(V4.1.2 GB2-XL FD)" // Who made the changes.
 
 // SERIAL_PORT selects which serial port should be used for communication with the host.
 // This allows the connection of wireless adapters (for instance) to non-default port pins.
@@ -349,7 +349,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Travel limits after homing
 #define X_MAX_POS 600
 #define X_MIN_POS 0
-#define Y_MAX_POS 615
+#define Y_MAX_POS 775
 #define Y_MIN_POS 0
 #define Z_MAX_POS 602
 #define Z_MIN_POS 0
