@@ -3723,17 +3723,13 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		// SERIAL_ECHO(target[Y_AXIS]);
 		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
 		// SERIAL_ECHO("\n");
-		 SERIAL_ECHO(target[Z_AXIS]);
-		 SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
-		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
+		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(target[E_AXIS]);
 		// SERIAL_ECHO(" FILAMENTCHANGE_ZADD");
 		// SERIAL_ECHO(" ");
 
-		HOMEAXIS(X);
-		HOMEAXIS(Y);
-        //finish moves
-        st_synchronize();
 
         //move xy
         if(code_seen('X'))
@@ -3765,10 +3761,10 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(target[Y_AXIS]);
 		// SERIAL_ECHO(" FILAMENTCHANGE XY");
-		 SERIAL_ECHO("\n");
-		 SERIAL_ECHO(target[Z_AXIS]);
-		 SERIAL_ECHO(" FILAMENTCHANGE XY");
-		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO(" FILAMENTCHANGE XY");
+		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(target[E_AXIS]);
 		// SERIAL_ECHO(" FILAMENTCHANGE XY");
 		// SERIAL_ECHO(" ");
@@ -3877,7 +3873,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		for(int i=0;i<EXTRUDERS;i++)
 			setTargetHotend(lasttemp[i], i);
 
-	skip_pause:
+skip_pause:
 
 		bool Set_back_to_lower_degrees = false;
 
@@ -3967,9 +3963,9 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		  // allow user to feed Filament through
 		  if (encoderPosition != 0)
 		  {
-			  temp_e_axis += float((int)encoderPosition) * 0.3;
+			  temp_e_axis += float((int)encoderPosition) * 0.4;
 			  encoderPosition = 0;
-			  plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], temp_e_axis, 3, active_extruder);
+			  plan_buffer_line(target[X_AXIS], target[Y_AXIS], target[Z_AXIS], temp_e_axis, 15, active_extruder);
 		  }
 		}
 
@@ -4020,9 +4016,9 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		HOMEAXIS(Y);
 		
 		//finish moves
-                st_synchronize();
+        st_synchronize();
 		
-		//enable_endstops(false);
+		enable_endstops(false);
 		
 		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(" Feed Rate ");
@@ -4041,10 +4037,10 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(" After_Home Y ");
 		// SERIAL_ECHO(target[Y_AXIS]);
-		 SERIAL_ECHO("\n");
-		 SERIAL_ECHO(" After_Home Z ");
-		 SERIAL_ECHO(target[Z_AXIS]);
-		 SERIAL_ECHO("\n");
+		// SERIAL_ECHO("\n");
+		// SERIAL_ECHO(" After_Home Z ");
+		// SERIAL_ECHO(target[Z_AXIS]);
+		// SERIAL_ECHO("\n");
 		// SERIAL_ECHO(" After_Home E ");
 		// SERIAL_ECHO(target[E_AXIS]);
 
@@ -4053,7 +4049,7 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		for (int i = 0; i < NUM_AXIS; i++)
 		target[i] = current_position[i];
 
-		lastpos[Z_AXIS]-=FILAMENTCHANGE_ZADD;
+		//lastpos[Z_AXIS]-=FILAMENTCHANGE_ZADD;
 		plan_set_position(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS]+FILAMENTCHANGE_ZADD, current_position[E_AXIS]-10);
 
 		// SERIAL_ECHO(current_position[Z_AXIS]);
@@ -4074,21 +4070,15 @@ case 404:  //M404 Enter the nominal filament width (3mm, 1.75mm ) N<3.0> or disp
 		// SERIAL_ECHO("      After_Home2 E");
 		// SERIAL_ECHO("\n");
 	
-		 SERIAL_ECHO(lastpos[Z_AXIS]);
-		 SERIAL_ECHO("       last position Z axis ");
-		 SERIAL_ECHO("\n");
-		//LCD_MESSAGEPGM(current_position[Z_AXIS]);
-		//delay(5000);
+		// SERIAL_ECHO(lastpos[Z_AXIS]);
+		// SERIAL_ECHO("       last position Z axis ");
+		// SERIAL_ECHO("\n");
 
-		
-		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], lastpos[E_AXIS], 50, active_extruder); //unretract
+		plan_buffer_line(current_position[X_AXIS], current_position[Y_AXIS], current_position[Z_AXIS], lastpos[E_AXIS], 4, active_extruder); //unretract
 		//plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], target[Z_AXIS], target[E_AXIS], 30, active_extruder); //move xy back		
 		//plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], target[E_AXIS], 30, active_extruder); //move z back		
 		plan_buffer_line(lastpos[X_AXIS], lastpos[Y_AXIS], lastpos[Z_AXIS], lastpos[E_AXIS], 50, active_extruder); //final unretract
 		
-		//LCD_MESSAGEPGM(lastpos[Z_AXIS]);
-		delay(5000);
-
 		feedrate=saved_feedrate;
 		
 		LCD_MESSAGEPGM("");

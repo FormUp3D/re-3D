@@ -57,6 +57,7 @@
 //The measured temperature is defined as "actualTemp = (measuredTemp * TEMP_SENSOR_AD595_GAIN) + TEMP_SENSOR_AD595_OFFSET"
 #define TEMP_SENSOR_AD595_OFFSET 0.0
 #define TEMP_SENSOR_AD595_GAIN   2.0
+
 #define TEMP_SENSOR_AD8495_OFFSET -250
 #define TEMP_SENSOR_AD8495_GAIN 1.0 
 
@@ -233,7 +234,7 @@
 #define INVERT_E_STEP_PIN false
 
 //default stepper release if idle
-#define DEFAULT_STEPPER_DEACTIVE_TIME 60
+#define DEFAULT_STEPPER_DEACTIVE_TIME 600
 
 #define DEFAULT_MINIMUMFEEDRATE       0.0     // minimum feedrate
 #define DEFAULT_MINTRAVELFEEDRATE     0.0
@@ -442,9 +443,9 @@ const unsigned int dropsegments=5; //everything with less than this number of st
   #ifdef FILAMENTCHANGEENABLE
 	#define FILAMENTCHANGE_XPOS 300
 	#define FILAMENTCHANGE_YPOS 10
-	#define FILAMENTCHANGE_ZADD 0
+	#define FILAMENTCHANGE_ZADD 5
 	#define FILAMENTCHANGE_FIRSTRETRACT -3
-	#define FILAMENTCHANGE_FINALRETRACT -100
+	#define FILAMENTCHANGE_FINALRETRACT -110
 	#define FILAMENTCHANGE_LASTRETRACT  1
   #endif
 #endif

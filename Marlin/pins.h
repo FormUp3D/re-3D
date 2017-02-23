@@ -656,7 +656,7 @@
   #endif
 
   #if MB(RAMPS_13_EFB) || MB(RAMPS_13_EFF) || MB(AZTEEG_X3)
-    #define FAN_PIN            17 // (Sprinter config)
+    #define FAN_PIN            9 // (Sprinter config)
   #elif MB(AZTEEG_X3_PRO)
     #define FAN_PIN            11 // Last Heater Pin on board
   #else
@@ -682,7 +682,7 @@
   #if MB(RAMPS_13_EFF)
     #define HEATER_0_PIN       8
   #else
-    #define HEATER_0_PIN       10   // EXTRUDER 1
+    #define HEATER_0_PIN       10   // EXTRUDER 1 GB2
   #endif
 
   #if MB(RAMPS_13_EFB) || MB(AZTEEG_X3)
@@ -707,7 +707,7 @@
     #define HEATER_2_PIN       -1
   #endif
 
-  #define TEMP_0_PIN         11   // ANALOG NUMBERING
+  #define TEMP_0_PIN         13   // ANALOG NUMBERING
   #define TEMP_1_PIN         4   // ANALOG NUMBERING
   #if MB(AZTEEG_X3_PRO)
     #define TEMP_2_PIN         12   // ANALOG NUMBERING
@@ -729,7 +729,7 @@
     #endif
   #endif
 
-  #define TEMP_BED_PIN       3   // ANALOG NUMBERING
+  #define TEMP_BED_PIN       14   // ANALOG NUMBERING
 
   #ifdef NUM_SERVOS
     #define SERVO0_PIN         11
@@ -3000,7 +3000,7 @@ DaveX plan for Teensylu/printrboard-type pinouts (ref teensylu & sprinter) for a
 
 #endif //__PINS_H
 // Overwrite any if then... worst best way to do this...
-//#define TEMP_BED_PIN        11 
+#define TEMP_BED_PIN        11 
 #if MOTHERBOARD == 67
   #define BTN_EN1 22	
   #define BTN_EN2 7	
@@ -3017,7 +3017,7 @@ DaveX plan for Teensylu/printrboard-type pinouts (ref teensylu & sprinter) for a
 	#define FILAMENT_DETECTION_EXT0_PIN                      47
 	#define FILAMENT_DETECTION_EXT0_TRIGGER_VALUE            1   // Either one or zero depending if you use a NO or NC
 	#if EXTRUDERS > 1
-		#define FILAMENT_DETECTION_EXT1_PIN                  39
+		#define FILAMENT_DETECTION_EXT1_PIN                  -1
 		#define FILAMENT_DETECTION_EXT1_TRIGGER_VALUE        1   // Either one or zero depending if you use a NO or NC
 	#if EXTRUDERS > 2
 		#define FILAMENT_DETECTION_EXT2_PIN                  -1
