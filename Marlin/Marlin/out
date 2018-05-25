@@ -1,0 +1,2000 @@
+# 1 "watchdog.cpp"
+# 1 "<built-in>" 1
+# 1 "<built-in>" 3
+# 342 "<built-in>" 3
+# 1 "<command line>" 1
+# 1 "<built-in>" 2
+# 1 "watchdog.cpp" 2
+# 23 "watchdog.cpp"
+# 1 "./Marlin.h" 1
+# 25 "./Marlin.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h" 1
+# 121 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern "C" {
+
+
+
+
+
+extern double cos(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double sin(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double tan(double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double fabs(double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double fmod(double __x, double __y) __attribute__((__const__));
+# 168 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double modf(double __x, double *__iptr);
+
+
+extern float modff (float __x, float *__iptr);
+
+
+
+
+extern double sqrt(double __x) __attribute__((__const__));
+
+
+extern float sqrtf (float) __attribute__((__const__));
+
+
+
+
+extern double cbrt(double __x) __attribute__((__const__));
+# 195 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double hypot (double __x, double __y) __attribute__((__const__));
+
+
+
+
+
+
+
+extern double square(double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double floor(double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double ceil(double __x) __attribute__((__const__));
+# 235 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double frexp(double __x, int *__pexp);
+
+
+
+
+
+
+
+extern double ldexp(double __x, int __exp) __attribute__((__const__));
+
+
+
+
+
+extern double exp(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double cosh(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double sinh(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double tanh(double __x) __attribute__((__const__));
+
+
+
+
+
+
+
+extern double acos(double __x) __attribute__((__const__));
+
+
+
+
+
+
+
+extern double asin(double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double atan(double __x) __attribute__((__const__));
+# 299 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double atan2(double __y, double __x) __attribute__((__const__));
+
+
+
+
+
+extern double log(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double log10(double __x) __attribute__((__const__));
+
+
+
+
+
+extern double pow(double __x, double __y) __attribute__((__const__));
+
+
+
+
+
+
+extern int isnan(double __x) __attribute__((__const__));
+# 334 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern int isinf(double __x) __attribute__((__const__));
+
+
+
+
+
+
+__attribute__((__const__)) static inline int isfinite (double __x)
+{
+    unsigned char __exp;
+    __asm__ (
+ "mov	%0, %C1		\n\t"
+ "lsl	%0		\n\t"
+ "mov	%0, %D1		\n\t"
+ "rol	%0		"
+ : "=r" (__exp)
+ : "r" (__x) );
+    return __exp != 0xff;
+}
+
+
+
+
+
+
+__attribute__((__const__)) static inline double copysign (double __x, double __y)
+{
+    __asm__ (
+ "bst	%D2, 7	\n\t"
+ "bld	%D0, 7	"
+ : "=r" (__x)
+ : "0" (__x), "r" (__y) );
+    return __x;
+}
+# 377 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern int signbit (double __x) __attribute__((__const__));
+
+
+
+
+
+
+extern double fdim (double __x, double __y) __attribute__((__const__));
+# 393 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double fma (double __x, double __y, double __z) __attribute__((__const__));
+
+
+
+
+
+
+
+extern double fmax (double __x, double __y) __attribute__((__const__));
+
+
+
+
+
+
+
+extern double fmin (double __x, double __y) __attribute__((__const__));
+
+
+
+
+
+
+extern double trunc (double __x) __attribute__((__const__));
+# 427 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern double round (double __x) __attribute__((__const__));
+# 440 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern long lround (double __x) __attribute__((__const__));
+# 454 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/math.h"
+extern long lrint (double __x) __attribute__((__const__));
+
+
+
+}
+# 26 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h" 1
+# 44 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/inttypes.h" 1
+# 37 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/inttypes.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h" 1
+# 125 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h"
+typedef signed int int8_t __attribute__((__mode__(__QI__)));
+typedef unsigned int uint8_t __attribute__((__mode__(__QI__)));
+typedef signed int int16_t __attribute__ ((__mode__ (__HI__)));
+typedef unsigned int uint16_t __attribute__ ((__mode__ (__HI__)));
+typedef signed int int32_t __attribute__ ((__mode__ (__SI__)));
+typedef unsigned int uint32_t __attribute__ ((__mode__ (__SI__)));
+
+typedef signed int int64_t __attribute__((__mode__(__DI__)));
+typedef unsigned int uint64_t __attribute__((__mode__(__DI__)));
+# 146 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h"
+typedef int16_t intptr_t;
+
+
+
+
+typedef uint16_t uintptr_t;
+# 163 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h"
+typedef int8_t int_least8_t;
+
+
+
+
+typedef uint8_t uint_least8_t;
+
+
+
+
+typedef int16_t int_least16_t;
+
+
+
+
+typedef uint16_t uint_least16_t;
+
+
+
+
+typedef int32_t int_least32_t;
+
+
+
+
+typedef uint32_t uint_least32_t;
+
+
+
+
+
+
+
+typedef int64_t int_least64_t;
+
+
+
+
+
+
+typedef uint64_t uint_least64_t;
+# 217 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h"
+typedef int8_t int_fast8_t;
+
+
+
+
+typedef uint8_t uint_fast8_t;
+
+
+
+
+typedef int16_t int_fast16_t;
+
+
+
+
+typedef uint16_t uint_fast16_t;
+
+
+
+
+typedef int32_t int_fast32_t;
+
+
+
+
+typedef uint32_t uint_fast32_t;
+
+
+
+
+
+
+
+typedef int64_t int_fast64_t;
+
+
+
+
+
+
+typedef uint64_t uint_fast64_t;
+# 277 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdint.h"
+typedef int64_t intmax_t;
+
+
+
+
+typedef uint64_t uintmax_t;
+# 38 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/inttypes.h" 2
+# 77 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/inttypes.h"
+typedef int32_t int_farptr_t;
+
+
+
+typedef uint32_t uint_farptr_t;
+# 45 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h" 2
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stdarg.h" 1 3 4
+# 30 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stdarg.h" 3 4
+typedef __builtin_va_list va_list;
+# 50 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stdarg.h" 3 4
+typedef __builtin_va_list __gnuc_va_list;
+# 46 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h" 2
+
+
+
+
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 1 3
+# 16 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 3
+
+
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stddef.h" 1 3 4
+# 62 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stddef.h" 3 4
+typedef long unsigned int size_t;
+# 19 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 2 3
+# 51 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h" 2
+# 244 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+struct __file {
+ char *buf;
+ unsigned char unget;
+ uint8_t flags;
+# 263 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+ int size;
+ int len;
+ int (*put)(char, struct __file *);
+ int (*get)(struct __file *);
+ void *udata;
+};
+# 277 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+typedef struct __file FILE;
+# 399 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern "C" {
+
+
+
+
+
+
+
+extern struct __file *__iob[];
+# 419 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern FILE *fdevopen(int (*__put)(char, FILE*), int (*__get)(FILE*));
+# 436 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int fclose(FILE *__stream);
+# 610 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int vfprintf(FILE *__stream, const char *__fmt, va_list __ap);
+
+
+
+
+
+extern int vfprintf_P(FILE *__stream, const char *__fmt, va_list __ap);
+
+
+
+
+
+
+extern int fputc(int __c, FILE *__stream);
+
+
+
+
+extern int putc(int __c, FILE *__stream);
+
+
+extern int putchar(int __c);
+# 651 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int printf(const char *__fmt, ...);
+
+
+
+
+
+extern int printf_P(const char *__fmt, ...);
+
+
+
+
+
+
+
+extern int vprintf(const char *__fmt, va_list __ap);
+
+
+
+
+
+extern int sprintf(char *__s, const char *__fmt, ...);
+
+
+
+
+
+extern int sprintf_P(char *__s, const char *__fmt, ...);
+# 687 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int snprintf(char *__s, size_t __n, const char *__fmt, ...);
+
+
+
+
+
+extern int snprintf_P(char *__s, size_t __n, const char *__fmt, ...);
+
+
+
+
+
+extern int vsprintf(char *__s, const char *__fmt, va_list ap);
+
+
+
+
+
+extern int vsprintf_P(char *__s, const char *__fmt, va_list ap);
+# 715 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int vsnprintf(char *__s, size_t __n, const char *__fmt, va_list ap);
+
+
+
+
+
+extern int vsnprintf_P(char *__s, size_t __n, const char *__fmt, va_list ap);
+
+
+
+
+extern int fprintf(FILE *__stream, const char *__fmt, ...);
+
+
+
+
+
+extern int fprintf_P(FILE *__stream, const char *__fmt, ...);
+
+
+
+
+
+
+extern int fputs(const char *__str, FILE *__stream);
+
+
+
+
+extern int fputs_P(const char *__str, FILE *__stream);
+
+
+
+
+
+extern int puts(const char *__str);
+
+
+
+
+extern int puts_P(const char *__str);
+# 764 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern size_t fwrite(const void *__ptr, size_t __size, size_t __nmemb,
+         FILE *__stream);
+
+
+
+
+
+
+
+extern int fgetc(FILE *__stream);
+
+
+
+
+extern int getc(FILE *__stream);
+
+
+extern int getchar(void);
+# 812 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int ungetc(int __c, FILE *__stream);
+# 824 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern char *fgets(char *__str, int __size, FILE *__stream);
+
+
+
+
+
+
+extern char *gets(char *__str);
+# 842 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern size_t fread(void *__ptr, size_t __size, size_t __nmemb,
+        FILE *__stream);
+
+
+
+
+extern void clearerr(FILE *__stream);
+# 859 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int feof(FILE *__stream);
+# 870 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+extern int ferror(FILE *__stream);
+
+
+
+
+
+
+extern int vfscanf(FILE *__stream, const char *__fmt, va_list __ap);
+
+
+
+
+extern int vfscanf_P(FILE *__stream, const char *__fmt, va_list __ap);
+
+
+
+
+
+
+
+extern int fscanf(FILE *__stream, const char *__fmt, ...);
+
+
+
+
+extern int fscanf_P(FILE *__stream, const char *__fmt, ...);
+
+
+
+
+
+
+extern int scanf(const char *__fmt, ...);
+
+
+
+
+extern int scanf_P(const char *__fmt, ...);
+
+
+
+
+
+
+
+extern int vscanf(const char *__fmt, va_list __ap);
+
+
+
+
+
+
+
+extern int sscanf(const char *__buf, const char *__fmt, ...);
+
+
+
+
+extern int sscanf_P(const char *__buf, const char *__fmt, ...);
+# 940 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdio.h"
+static __inline__ int fflush(FILE *stream __attribute__((unused)))
+{
+ return 0;
+}
+
+
+
+
+
+
+__extension__ typedef long long fpos_t;
+extern int fgetpos(FILE *stream, fpos_t *pos);
+extern FILE *fopen(const char *path, const char *mode);
+extern FILE *freopen(const char *path, const char *mode, FILE *stream);
+extern FILE *fdopen(int, const char *);
+extern int fseek(FILE *stream, long offset, int whence);
+extern int fsetpos(FILE *stream, fpos_t *pos);
+extern long ftell(FILE *stream);
+extern int fileno(FILE *);
+extern void perror(const char *s);
+extern int remove(const char *pathname);
+extern int rename(const char *oldpath, const char *newpath);
+extern void rewind(FILE *stream);
+extern void setbuf(FILE *stream, char *buf);
+extern int setvbuf(FILE *stream, char *buf, int mode, size_t size);
+extern FILE *tmpfile(void);
+extern char *tmpnam (char *s);
+
+
+
+}
+# 27 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h" 1
+# 48 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 1 3
+# 16 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 3
+
+
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stddef.h" 1 3 4
+# 19 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 2 3
+# 49 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h" 2
+
+
+
+
+
+
+
+extern "C" {
+# 70 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+typedef struct {
+ int quot;
+ int rem;
+} div_t;
+
+
+typedef struct {
+ long quot;
+ long rem;
+} ldiv_t;
+
+
+typedef int (*__compar_fn_t)(const void *, const void *);
+# 116 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void abort(void) __attribute__((__noreturn__));
+
+
+
+
+extern int abs(int __i) __attribute__((__const__));
+# 130 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern long labs(long __i) __attribute__((__const__));
+# 153 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void *bsearch(const void *__key, const void *__base, size_t __nmemb,
+       size_t __size, int (*__compar)(const void *, const void *));
+
+
+
+
+
+
+
+extern div_t div(int __num, int __denom) __asm__("__divmodhi4") __attribute__((__const__));
+
+
+
+
+
+extern ldiv_t ldiv(long __num, long __denom) __asm__("__divmodsi4") __attribute__((__const__));
+# 185 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void qsort(void *__base, size_t __nmemb, size_t __size,
+    __compar_fn_t __compar);
+# 218 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern long strtol(const char *__nptr, char **__endptr, int __base);
+# 252 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern unsigned long strtoul(const char *__nptr, char **__endptr, int __base);
+# 264 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern long atol(const char *__s) __attribute__((__pure__));
+# 276 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern int atoi(const char *__s) __attribute__((__pure__));
+# 288 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void exit(int __status) __attribute__((__noreturn__));
+# 300 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void *malloc(size_t __size) __attribute__((__malloc__));
+
+
+
+
+
+
+extern void free(void *__ptr);
+
+
+
+
+extern size_t __malloc_margin;
+
+
+
+
+extern char *__malloc_heap_start;
+
+
+
+
+extern char *__malloc_heap_end;
+
+
+
+
+
+
+extern void *calloc(size_t __nele, size_t __size) __attribute__((__malloc__));
+# 348 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern void *realloc(void *__ptr, size_t __size) __attribute__((__malloc__));
+
+extern double strtod(const char *__nptr, char **__endptr);
+# 361 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern double atof(const char *__nptr);
+# 383 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern int rand(void);
+
+
+
+extern void srand(unsigned int __seed);
+
+
+
+
+
+
+extern int rand_r(unsigned long *__ctx);
+# 428 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern __inline__
+char *itoa (int __val, char *__s, int __radix)
+{
+    if (!__builtin_constant_p (__radix)) {
+ extern char *__itoa (int, char *, int);
+ return __itoa (__val, __s, __radix);
+    } else if (__radix < 2 || __radix > 36) {
+ *__s = 0;
+ return __s;
+    } else {
+ extern char *__itoa_ncheck (int, char *, unsigned char);
+ return __itoa_ncheck (__val, __s, __radix);
+    }
+}
+# 473 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern __inline__
+char *ltoa (long __val, char *__s, int __radix)
+{
+    if (!__builtin_constant_p (__radix)) {
+ extern char *__ltoa (long, char *, int);
+ return __ltoa (__val, __s, __radix);
+    } else if (__radix < 2 || __radix > 36) {
+ *__s = 0;
+ return __s;
+    } else {
+ extern char *__ltoa_ncheck (long, char *, unsigned char);
+ return __ltoa_ncheck (__val, __s, __radix);
+    }
+}
+# 516 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern __inline__
+char *utoa (unsigned int __val, char *__s, int __radix)
+{
+    if (!__builtin_constant_p (__radix)) {
+ extern char *__utoa (unsigned int, char *, int);
+ return __utoa (__val, __s, __radix);
+    } else if (__radix < 2 || __radix > 36) {
+ *__s = 0;
+ return __s;
+    } else {
+ extern char *__utoa_ncheck (unsigned int, char *, unsigned char);
+ return __utoa_ncheck (__val, __s, __radix);
+    }
+}
+# 558 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern __inline__
+char *ultoa (unsigned long __val, char *__s, int __radix)
+{
+    if (!__builtin_constant_p (__radix)) {
+ extern char *__ultoa (unsigned long, char *, int);
+ return __ultoa (__val, __s, __radix);
+    } else if (__radix < 2 || __radix > 36) {
+ *__s = 0;
+ return __s;
+    } else {
+ extern char *__ultoa_ncheck (unsigned long, char *, unsigned char);
+ return __ultoa_ncheck (__val, __s, __radix);
+    }
+}
+# 590 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern long random(void);
+
+
+
+
+extern void srandom(unsigned long __seed);
+
+
+
+
+
+
+
+extern long random_r(unsigned long *__ctx);
+# 649 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern char *dtostre(double __val, char *__s, unsigned char __prec,
+       unsigned char __flags);
+# 666 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern char *dtostrf(double __val, signed char __width,
+                     unsigned char __prec, char *__s);
+# 685 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/stdlib.h"
+extern int atexit(void (*)(void));
+extern int system (const char *);
+extern char *getenv (const char *);
+
+
+
+}
+# 28 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h" 1
+# 46 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 1 3
+# 16 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 3
+
+
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stddef.h" 1 3 4
+# 19 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 2 3
+# 47 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h" 2
+# 58 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern "C" {
+# 125 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int ffs(int __val) __attribute__((__const__));
+
+
+
+
+
+extern int ffsl(long __val) __attribute__((__const__));
+
+
+
+
+
+__extension__ extern int ffsll(long long __val) __attribute__((__const__));
+# 150 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memccpy(void *, const void *, int, size_t);
+# 162 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memchr(const void *, int, size_t) __attribute__((__pure__));
+# 180 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int memcmp(const void *, const void *, size_t) __attribute__((__pure__));
+# 191 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memcpy(void *, const void *, size_t);
+# 203 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memmem(const void *, size_t, const void *, size_t) __attribute__((__pure__));
+# 213 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memmove(void *, const void *, size_t);
+# 225 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memrchr(const void *, int, size_t) __attribute__((__pure__));
+# 235 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern void *memset(void *, int, size_t);
+# 248 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strcat(char *, const char *);
+# 262 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strchr(const char *, int) __attribute__((__pure__));
+# 274 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strchrnul(const char *, int) __attribute__((__pure__));
+# 287 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int strcmp(const char *, const char *) __attribute__((__pure__));
+# 305 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strcpy(char *, const char *);
+# 320 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int strcasecmp(const char *, const char *) __attribute__((__pure__));
+# 333 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strcasestr(const char *, const char *) __attribute__((__pure__));
+# 344 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strcspn(const char *__s, const char *__reject) __attribute__((__pure__));
+# 364 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strdup(const char *s1);
+# 377 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strlcat(char *, const char *, size_t);
+# 388 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strlcpy(char *, const char *, size_t);
+# 399 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strlen(const char *) __attribute__((__pure__));
+# 411 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strlwr(char *);
+# 422 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strncat(char *, const char *, size_t);
+# 434 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int strncmp(const char *, const char *, size_t) __attribute__((__pure__));
+# 449 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strncpy(char *, const char *, size_t);
+# 464 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern int strncasecmp(const char *, const char *, size_t) __attribute__((__pure__));
+# 478 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strnlen(const char *, size_t) __attribute__((__pure__));
+# 491 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strpbrk(const char *__s, const char *__accept) __attribute__((__pure__));
+# 505 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strrchr(const char *, int) __attribute__((__pure__));
+# 515 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strrev(char *);
+# 533 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strsep(char **, const char *);
+# 544 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern size_t strspn(const char *__s, const char *__accept) __attribute__((__pure__));
+# 557 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strstr(const char *, const char *) __attribute__((__pure__));
+# 576 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strtok(char *, const char *);
+# 593 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strtok_r(char *, const char *, char **);
+# 606 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/string.h"
+extern char *strupr(char *);
+
+
+
+extern int strcoll(const char *s1, const char *s2);
+extern char *strerror(int errnum);
+extern size_t strxfrm(char *dest, const char *src, size_t n);
+
+
+
+}
+# 29 "./Marlin.h" 2
+
+
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h" 1
+# 45 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay_basic.h" 1
+# 40 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay_basic.h"
+static __inline__ void _delay_loop_1(uint8_t __count) __attribute__((__always_inline__));
+static __inline__ void _delay_loop_2(uint16_t __count) __attribute__((__always_inline__));
+# 80 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay_basic.h"
+void
+_delay_loop_1(uint8_t __count)
+{
+ __asm__ volatile (
+  "1: dec %0" "\n\t"
+  "brne 1b"
+  : "=r" (__count)
+  : "0" (__count)
+ );
+}
+# 102 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay_basic.h"
+void
+_delay_loop_2(uint16_t __count)
+{
+ __asm__ volatile (
+  "1: sbiw %0,1" "\n\t"
+  "brne 1b"
+  : "=w" (__count)
+  : "0" (__count)
+ );
+}
+# 46 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h" 2
+# 86 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+static __inline__ void _delay_us(double __us) __attribute__((__always_inline__));
+static __inline__ void _delay_ms(double __ms) __attribute__((__always_inline__));
+# 165 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+void
+_delay_ms(double __ms)
+{
+ double __tmp ;
+# 190 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+ uint16_t __ticks;
+ __tmp = ((1000000UL) / 4e3) * __ms;
+ if (__tmp < 1.0)
+  __ticks = 1;
+ else if (__tmp > 65535)
+ {
+
+  __ticks = (uint16_t) (__ms * 10.0);
+  while(__ticks)
+  {
+
+   _delay_loop_2(((1000000UL) / 4e3) / 10);
+   __ticks --;
+  }
+  return;
+ }
+ else
+  __ticks = (uint16_t)__tmp;
+ _delay_loop_2(__ticks);
+
+}
+# 254 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+void
+_delay_us(double __us)
+{
+ double __tmp ;
+# 279 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/util/delay.h"
+ uint8_t __ticks;
+ double __tmp2 ;
+ __tmp = ((1000000UL) / 3e6) * __us;
+ __tmp2 = ((1000000UL) / 4e6) * __us;
+ if (__tmp < 1.0)
+  __ticks = 1;
+ else if (__tmp2 > 65535)
+ {
+  _delay_ms(__us / 1000.0);
+ }
+ else if (__tmp > 255)
+ {
+  uint16_t __ticks=(uint16_t)__tmp2;
+  _delay_loop_2(__ticks);
+  return;
+ }
+ else
+  __ticks = (uint8_t)__tmp;
+ _delay_loop_1(__ticks);
+
+}
+# 32 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h" 1
+# 89 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 1 3
+# 16 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 3
+
+
+# 1 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/9.0.0/include/stddef.h" 1 3 4
+# 19 "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include/c++/v1/stddef.h" 2 3
+# 90 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 1
+# 99 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/sfr_defs.h" 1
+# 100 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+# 627 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/portpins.h" 1
+# 628 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/common.h" 1
+# 630 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/version.h" 1
+# 632 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+
+
+
+
+
+
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/fuse.h" 1
+# 639 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+
+
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/lock.h" 1
+# 642 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/io.h" 2
+# 91 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h" 2
+# 116 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern "C" {
+# 1158 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern const void * memchr_P(const void *, int __val, size_t __len) __attribute__((__const__));
+# 1172 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int memcmp_P(const void *, const void *, size_t) __attribute__((__pure__));
+
+
+
+
+
+
+extern void *memccpy_P(void *, const void *, int __val, size_t);
+# 1188 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern void *memcpy_P(void *, const void *, size_t);
+
+
+
+
+
+
+extern void *memmem_P(const void *, size_t, const void *, size_t) __attribute__((__pure__));
+# 1207 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern const void * memrchr_P(const void *, int __val, size_t __len) __attribute__((__const__));
+# 1217 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strcat_P(char *, const char *);
+# 1233 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern const char * strchr_P(const char *, int __val) __attribute__((__const__));
+# 1245 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern const char * strchrnul_P(const char *, int __val) __attribute__((__const__));
+# 1258 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strcmp_P(const char *, const char *) __attribute__((__pure__));
+# 1268 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strcpy_P(char *, const char *);
+# 1285 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strcasecmp_P(const char *, const char *) __attribute__((__pure__));
+
+
+
+
+
+
+extern char *strcasestr_P(const char *, const char *) __attribute__((__pure__));
+# 1305 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strcspn_P(const char *__s, const char * __reject) __attribute__((__pure__));
+# 1321 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strlcat_P (char *, const char *, size_t );
+# 1334 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strlcpy_P (char *, const char *, size_t );
+# 1346 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strnlen_P(const char *, size_t) __attribute__((__const__));
+# 1357 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strncmp_P(const char *, const char *, size_t) __attribute__((__pure__));
+# 1376 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strncasecmp_P(const char *, const char *, size_t) __attribute__((__pure__));
+# 1387 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strncat_P(char *, const char *, size_t);
+# 1401 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strncpy_P(char *, const char *, size_t);
+# 1416 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strpbrk_P(const char *__s, const char * __accept) __attribute__((__pure__));
+# 1427 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern const char * strrchr_P(const char *, int __val) __attribute__((__const__));
+# 1447 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strsep_P(char **__sp, const char * __delim);
+# 1460 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strspn_P(const char *__s, const char * __accept) __attribute__((__pure__));
+# 1474 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strstr_P(const char *, const char *) __attribute__((__pure__));
+# 1496 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strtok_P(char *__s, const char * __delim);
+# 1516 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strtok_rP(char *__s, const char * __delim, char **__last);
+# 1529 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strlen_PF(uint_farptr_t src) __attribute__((__const__));
+# 1545 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strnlen_PF(uint_farptr_t src, size_t len) __attribute__((__const__));
+# 1560 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern void *memcpy_PF(void *dest, uint_farptr_t src, size_t len);
+# 1575 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strcpy_PF(char *dest, uint_farptr_t src);
+# 1595 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strncpy_PF(char *dest, uint_farptr_t src, size_t len);
+# 1611 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strcat_PF(char *dest, uint_farptr_t src);
+# 1632 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strlcat_PF(char *dst, uint_farptr_t src, size_t siz);
+# 1649 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strncat_PF(char *dest, uint_farptr_t src, size_t len);
+# 1665 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strcmp_PF(const char *s1, uint_farptr_t s2) __attribute__((__pure__));
+# 1682 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strncmp_PF(const char *s1, uint_farptr_t s2, size_t n) __attribute__((__pure__));
+# 1698 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strcasecmp_PF(const char *s1, uint_farptr_t s2) __attribute__((__pure__));
+# 1716 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int strncasecmp_PF(const char *s1, uint_farptr_t s2, size_t n) __attribute__((__pure__));
+# 1732 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern char *strstr_PF(const char *s1, uint_farptr_t s2);
+# 1744 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t strlcpy_PF(char *dst, uint_farptr_t src, size_t siz);
+# 1760 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern int memcmp_PF(const void *, uint_farptr_t, size_t) __attribute__((__pure__));
+# 1779 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/pgmspace.h"
+extern size_t __strlen_P(const char *) __attribute__((__const__));
+__attribute__((__always_inline__)) static __inline__ size_t strlen_P(const char * s);
+static __inline__ size_t strlen_P(const char *s) {
+  return __builtin_constant_p(__builtin_strlen(s))
+     ? __builtin_strlen(s) : __strlen_P(s);
+}
+
+
+
+}
+# 33 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/eeprom.h" 1
+# 34 "./Marlin.h" 2
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/interrupt.h" 1
+# 35 "./Marlin.h" 2
+
+# 1 "./MarlinConfig.h" 1
+# 26 "./MarlinConfig.h"
+# 1 "./fastio.h" 1
+# 33 "./fastio.h"
+# 1 "./macros.h" 1
+# 34 "./fastio.h" 2
+# 120 "./fastio.h"
+typedef enum {
+  WGM_NORMAL,
+  WGM_PWM_PC_8,
+  WGM_PWM_PC_9,
+  WGM_PWM_PC_10,
+  WGM_CTC_OCRnA,
+  WGM_FAST_PWM_8,
+  WGM_FAST_PWM_9,
+  WGM_FAST_PWM_10,
+  WGM_PWM_PC_FC_ICRn,
+  WGM_PWM_PC_FC_OCRnA,
+  WGM_PWM_PC_ICRn,
+  WGM_PWM_PC_OCRnA,
+  WGM_CTC_ICRn,
+  WGM_reserved,
+  WGM_FAST_PWM_ICRn,
+  WGM_FAST_PWM_OCRnA
+} WaveGenMode;
+
+
+typedef enum {
+  COM_NORMAL,
+  COM_TOGGLE,
+  COM_CLEAR_SET,
+  COM_SET_CLEAR
+} CompareMode;
+
+
+typedef enum {
+  CS_NONE,
+  CS_PRESCALER_1,
+  CS_PRESCALER_8,
+  CS_PRESCALER_64,
+  CS_PRESCALER_256,
+  CS_PRESCALER_1024,
+  CS_EXT_FALLING,
+  CS_EXT_RISING
+} ClockSource;
+
+
+typedef enum {
+  CS2_NONE,
+  CS2_PRESCALER_1,
+  CS2_PRESCALER_8,
+  CS2_PRESCALER_32,
+  CS2_PRESCALER_64,
+  CS2_PRESCALER_128,
+  CS2_PRESCALER_256,
+  CS2_PRESCALER_1024
+} ClockSource2;
+# 27 "./MarlinConfig.h" 2
+
+# 1 "./systems.h" 1
+# 29 "./MarlinConfig.h" 2
+# 1 "./boards.h" 1
+# 30 "./MarlinConfig.h" 2
+# 1 "./Version.h" 1
+# 31 "./MarlinConfig.h" 2
+# 1 "./Configuration.h" 1
+# 83 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 84 "./Configuration.h" 2
+# 143 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 144 "./Configuration.h" 2
+# 233 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 234 "./Configuration.h" 2
+# 257 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 258 "./Configuration.h" 2
+# 441 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 442 "./Configuration.h" 2
+# 480 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 481 "./Configuration.h" 2
+# 500 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 501 "./Configuration.h" 2
+# 548 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 549 "./Configuration.h" 2
+# 621 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 622 "./Configuration.h" 2
+# 796 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 797 "./Configuration.h" 2
+# 806 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 807 "./Configuration.h" 2
+# 821 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 822 "./Configuration.h" 2
+# 835 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 836 "./Configuration.h" 2
+# 853 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 854 "./Configuration.h" 2
+# 912 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 913 "./Configuration.h" 2
+# 1097 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1098 "./Configuration.h" 2
+# 1133 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1134 "./Configuration.h" 2
+# 1195 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1196 "./Configuration.h" 2
+# 1244 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1245 "./Configuration.h" 2
+# 1373 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1374 "./Configuration.h" 2
+# 1753 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1754 "./Configuration.h" 2
+# 1887 "./Configuration.h"
+# 1 "./gigabot.h" 1
+# 1888 "./Configuration.h" 2
+# 32 "./MarlinConfig.h" 2
+# 1 "./Conditionals_LCD.h" 1
+# 33 "./MarlinConfig.h" 2
+# 1 "./tmc_macros.h" 1
+# 34 "./MarlinConfig.h" 2
+# 1 "./Configuration_adv.h" 1
+# 162 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 163 "./Configuration_adv.h" 2
+# 211 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 212 "./Configuration_adv.h" 2
+# 262 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 263 "./Configuration_adv.h" 2
+# 368 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 369 "./Configuration_adv.h" 2
+# 495 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 496 "./Configuration_adv.h" 2
+# 665 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 666 "./Configuration_adv.h" 2
+# 704 "./Configuration_adv.h"
+# 1 "./gigabot.h" 1
+# 705 "./Configuration_adv.h" 2
+# 35 "./MarlinConfig.h" 2
+# 1 "./pins.h" 1
+# 127 "./pins.h"
+# 1 "./pins_AZTEEG_X3_PRO.h" 1
+# 38 "./pins_AZTEEG_X3_PRO.h"
+# 1 "./pins_RAMPS.h" 1
+# 39 "./pins_AZTEEG_X3_PRO.h" 2
+# 128 "./pins.h" 2
+# 36 "./MarlinConfig.h" 2
+
+
+
+
+# 1 "./Conditionals_post.h" 1
+# 41 "./MarlinConfig.h" 2
+# 1 "./SanityCheck.h" 1
+# 296 "./SanityCheck.h"
+static_assert((590 - (0)) >= 590 && (610 - (0)) >= 610,
+  "Movement bounds ([XY]_MIN_POS, [XY]_MAX_POS) are too narrow to contain [XY]_BED_SIZE.");
+# 579 "./SanityCheck.h"
+static_assert(1 >= 0
+# 607 "./SanityCheck.h"
+  , "Please enable only one of DELTA, MORGAN_SCARA, MAKERARM_SCARA, COREXY, COREYX, COREXZ, COREZX, COREYZ, or COREZY."
+);
+# 638 "./SanityCheck.h"
+static_assert(1 >= 0
+# 660 "./SanityCheck.h"
+  , "Please enable only one probe option: PROBE_MANUALLY, FIX_MOUNTED_PROBE, BLTOUCH, SOLENOID_PROBE, Z_PROBE_ALLEN_KEY, Z_PROBE_SLED, or Z Servo."
+);
+# 750 "./SanityCheck.h"
+static_assert(1 >= 0
+# 766 "./SanityCheck.h"
+  , "Select only one of: MESH_BED_LEVELING, AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_3POINT, AUTO_BED_LEVELING_BILINEAR or AUTO_BED_LEVELING_UBL."
+);
+# 1312 "./SanityCheck.h"
+static_assert(1 >= 0
+# 1360 "./SanityCheck.h"
+    + 1
+# 1418 "./SanityCheck.h"
+  , "Please select no more than one LCD controller option."
+);
+# 1517 "./SanityCheck.h"
+constexpr float sanity_arr_1[] = { 118.52, 118.52, 4031.5, 1000 },
+                sanity_arr_2[] = { 150, 150, 4, 60 },
+                sanity_arr_3[] = { 3000, 3000, 100, 1000 };
+static_assert((sizeof(sanity_arr_1)/sizeof(*sanity_arr_1)) >= 4, "DEFAULT_AXIS_STEPS_PER_UNIT requires 4 (or more) elements.");
+static_assert((sizeof(sanity_arr_2)/sizeof(*sanity_arr_2)) >= 4, "DEFAULT_MAX_FEEDRATE requires 4 (or more) elements.");
+static_assert((sizeof(sanity_arr_3)/sizeof(*sanity_arr_3)) >= 4, "DEFAULT_MAX_ACCELERATION requires 4 (or more) elements.");
+static_assert((sizeof(sanity_arr_1)/sizeof(*sanity_arr_1)) <= 4, "DEFAULT_AXIS_STEPS_PER_UNIT has too many elements.");
+static_assert((sizeof(sanity_arr_2)/sizeof(*sanity_arr_2)) <= 4, "DEFAULT_MAX_FEEDRATE has too many elements.");
+static_assert((sizeof(sanity_arr_3)/sizeof(*sanity_arr_3)) <= 4, "DEFAULT_MAX_ACCELERATION has too many elements.");
+# 42 "./MarlinConfig.h" 2
+# 37 "./Marlin.h" 2
+
+
+
+
+
+# 1 "./enum.h" 1
+# 36 "./enum.h"
+enum AxisEnum {
+  NO_AXIS = -1,
+  X_AXIS = 0,
+  A_AXIS = 0,
+  Y_AXIS = 1,
+  B_AXIS = 1,
+  Z_AXIS = 2,
+  C_AXIS = 2,
+  E_AXIS = 3,
+  X_HEAD = 4,
+  Y_HEAD = 5,
+  Z_HEAD = 6,
+  ALL_AXES = 100
+};
+# 61 "./enum.h"
+typedef enum {
+  LINEARUNIT_MM,
+  LINEARUNIT_INCH
+} LinearUnit;
+
+typedef enum {
+  TEMPUNIT_C,
+  TEMPUNIT_K,
+  TEMPUNIT_F
+} TempUnit;
+
+
+
+
+
+enum DebugFlags {
+  DEBUG_NONE = 0,
+  DEBUG_ECHO = (1 << (0)),
+  DEBUG_INFO = (1 << (1)),
+  DEBUG_ERRORS = (1 << (2)),
+  DEBUG_DRYRUN = (1 << (3)),
+  DEBUG_COMMUNICATION = (1 << (4)),
+  DEBUG_LEVELING = (1 << (5)),
+  DEBUG_MESH_ADJUST = (1 << (6)),
+  DEBUG_ALL = 0xFF
+};
+
+enum EndstopEnum {
+  X_MIN,
+  Y_MIN,
+  Z_MIN,
+  Z_MIN_PROBE,
+  X_MAX,
+  Y_MAX,
+  Z_MAX,
+  X2_MIN,
+  X2_MAX,
+  Y2_MIN,
+  Y2_MAX,
+  Z2_MIN,
+  Z2_MAX
+};
+# 149 "./enum.h"
+  enum MarlinBusyState {
+    NOT_BUSY,
+    IN_HANDLER,
+    IN_PROCESS,
+    PAUSED_FOR_USER,
+    PAUSED_FOR_INPUT
+  };
+
+
+
+
+
+enum LsAction { LS_SerialPrint, LS_Count, LS_GetFilename };
+
+
+
+
+enum LCDViewAction {
+  LCDVIEW_NONE,
+  LCDVIEW_REDRAW_NOW,
+  LCDVIEW_CALL_REDRAW_NEXT,
+  LCDVIEW_CLEAR_CALL_REDRAW,
+  LCDVIEW_CALL_NO_REDRAW
+};
+# 43 "./Marlin.h" 2
+# 1 "./types.h" 1
+# 26 "./types.h"
+typedef unsigned long millis_t;
+
+typedef struct {
+  int8_t x_index, y_index;
+  float distance;
+} mesh_index_pair;
+# 44 "./Marlin.h" 2
+
+# 1 "./utility.h" 1
+# 26 "./utility.h"
+void safe_delay(millis_t ms);
+
+
+  void crc16(uint16_t *crc, const void * const data, uint16_t cnt);
+
+
+
+
+
+  char* i8tostr3(const uint8_t x);
+
+
+  char* itostr3(const int x);
+
+
+  char* itostr3left(const int xx);
+
+
+  char *itostr4sign(const int x);
+
+
+  char* ftostr12ns(const float &x);
+
+
+  char* ftostr32(const float &x);
+
+
+  char* ftostr41sign(const float &x);
+
+
+  char* ftostr43sign(const float &x, char plus=' ');
+
+
+  char* ftostr5rj(const float &x);
+
+
+  char* ftostr51sign(const float &x);
+
+
+  char* ftostr52sp(const float &x);
+
+
+  char* ftostr52sign(const float &x);
+
+
+  char* ftostr62rj(const float &x);
+
+
+  __attribute__((always_inline)) inline char *ftostr3(const float &x) { return itostr3((int)x); }
+
+
+
+
+
+
+    __attribute__((always_inline)) inline char *ftostr4sign(const float &x) { return itostr4sign((int)x); }
+# 46 "./Marlin.h" 2
+# 1 "./serial.h" 1
+# 36 "./serial.h"
+# 1 "./MarlinSerial.h" 1
+# 94 "./MarlinSerial.h"
+    typedef uint8_t ring_buffer_pos_t;
+# 105 "./MarlinSerial.h"
+  class MarlinSerial {
+
+    public:
+      MarlinSerial() {};
+      static void begin(const long);
+      static void end();
+      static int peek(void);
+      static int read(void);
+      static void flush(void);
+      static ring_buffer_pos_t available(void);
+      static void checkRx(void);
+      static void write(const uint8_t c);
+
+
+
+
+      static void writeNoHandshake(const uint8_t c);
+# 131 "./MarlinSerial.h"
+    private:
+      static void printNumber(unsigned long, const uint8_t);
+      static void printFloat(double, uint8_t);
+
+    public:
+      __attribute__((always_inline)) inline static void write(const char* str) { while (*str) write(*str++); }
+      __attribute__((always_inline)) inline static void write(const uint8_t* buffer, size_t size) { while (size--) write(*buffer++); }
+      __attribute__((always_inline)) inline static void print(const String& s) { for (int i = 0; i < (int)s.length(); i++) write(s[i]); }
+      __attribute__((always_inline)) inline static void print(const char* str) { write(str); }
+
+      static void print(char, int = 0);
+      static void print(unsigned char, int = 0);
+      static void print(int, int = 10);
+      static void print(unsigned int, int = 10);
+      static void print(long, int = 10);
+      static void print(unsigned long, int = 10);
+      static void print(double, int = 2);
+
+      static void println(const String& s);
+      static void println(const char[]);
+      static void println(char, int = 0);
+      static void println(unsigned char, int = 0);
+      static void println(int, int = 10);
+      static void println(unsigned int, int = 10);
+      static void println(long, int = 10);
+      static void println(unsigned long, int = 10);
+      static void println(double, int = 2);
+      static void println(void);
+  };
+
+  extern MarlinSerial customizedSerial;
+# 37 "./serial.h" 2
+
+
+
+extern const char echomagic[] __attribute__((__progmem__));
+extern const char errormagic[] __attribute__((__progmem__));
+# 76 "./serial.h"
+void serial_echopair_P(const char* s_P, const char *v);
+void serial_echopair_P(const char* s_P, char v);
+void serial_echopair_P(const char* s_P, int v);
+void serial_echopair_P(const char* s_P, long v);
+void serial_echopair_P(const char* s_P, float v);
+void serial_echopair_P(const char* s_P, double v);
+void serial_echopair_P(const char* s_P, unsigned int v);
+void serial_echopair_P(const char* s_P, unsigned long v);
+__attribute__((always_inline)) inline void serial_echopair_P(const char* s_P, uint8_t v) { serial_echopair_P(s_P, (int)v); }
+__attribute__((always_inline)) inline void serial_echopair_P(const char* s_P, uint16_t v) { serial_echopair_P(s_P, (int)v); }
+__attribute__((always_inline)) inline void serial_echopair_P(const char* s_P, bool v) { serial_echopair_P(s_P, (int)v); }
+__attribute__((always_inline)) inline void serial_echopair_P(const char* s_P, void *v) { serial_echopair_P(s_P, (unsigned long)v); }
+
+void serial_spaces(uint8_t count);
+
+
+
+
+
+
+
+__attribute__((always_inline)) inline void serialprintPGM(const char* str) {
+  while (char ch = (__extension__({ uint16_t __addr16 = (uint16_t)((uint16_t)(str++)); uint8_t __result; __asm__ __volatile__ ( "lpm" "\n\t" "mov %0, r0" "\n\t" : "=r" (__result) : "z" (__addr16) : "r0" ); __result; }))) customizedSerial.write(ch);
+}
+# 47 "./Marlin.h" 2
+
+
+
+
+# 1 "./stopwatch.h" 1
+# 36 "./stopwatch.h"
+class Stopwatch {
+  private:
+    enum State {
+      STOPPED,
+      RUNNING,
+      PAUSED
+    };
+
+    Stopwatch::State state;
+    millis_t accumulator;
+    millis_t startTimestamp;
+    millis_t stopTimestamp;
+
+  public:
+
+
+
+    Stopwatch();
+
+
+
+
+
+
+
+    bool stop();
+
+
+
+
+
+
+
+    bool pause();
+
+
+
+
+
+
+
+    bool start();
+
+
+
+
+
+    void reset();
+
+
+
+
+
+
+    bool isRunning();
+
+
+
+
+
+
+    bool isPaused();
+
+
+
+
+
+
+    millis_t duration();
+# 115 "./stopwatch.h"
+};
+# 52 "./Marlin.h" 2
+
+
+void idle(
+
+
+
+);
+
+void manage_inactivity(bool ignore_stepper_queue = false);
+# 177 "./Marlin.h"
+void enable_all_steppers();
+void disable_e_steppers();
+void disable_all_steppers();
+
+void FlushSerialRequestResend();
+void ok_to_send();
+
+void kill(const char*);
+
+void quickstop_stepper();
+
+
+
+
+
+extern uint8_t marlin_debug_flags;
+
+
+extern bool Running;
+inline bool IsRunning() { return Running; }
+inline bool IsStopped() { return !Running; }
+
+bool enqueue_and_echo_command(const char* cmd, bool say_ok=false);
+void enqueue_and_echo_commands_P(const char * const cmd);
+void clear_command_queue();
+
+extern millis_t previous_cmd_ms;
+inline void refresh_cmd_timeout() { previous_cmd_ms = millis(); }
+# 213 "./Marlin.h"
+extern float feedrate_mm_s;
+extern int16_t feedrate_percentage;
+
+
+
+extern bool axis_relative_modes[];
+extern bool axis_known_position[3];
+extern bool axis_homed[3];
+extern volatile bool wait_for_heatup;
+
+
+  extern volatile bool wait_for_user;
+
+
+extern float current_position[4], destination[4];
+
+
+
+
+    extern float home_offset[3];
+
+
+    extern float position_shift[3];
+
+
+
+
+  extern float workspace_offset[3];
+# 270 "./Marlin.h"
+  extern float hotend_offset[3][2];
+
+
+
+extern float soft_endstop_min[3], soft_endstop_max[3];
+
+
+  extern bool soft_endstops_enabled;
+  void clamp_to_software_endstops(float target[3]);
+
+
+
+
+
+
+  void update_software_endstops(const AxisEnum axis);
+# 294 "./Marlin.h"
+void report_current_position();
+# 384 "./Marlin.h"
+  extern float y_endstop_adj;
+# 400 "./Marlin.h"
+  extern MarlinBusyState busy_state;
+
+
+
+
+
+
+  extern int16_t fanSpeeds[1];
+# 455 "./Marlin.h"
+  extern Stopwatch print_job_timer;
+
+
+
+extern uint8_t active_extruder;
+
+
+
+
+
+inline void set_current_from_destination() { memcpy(current_position,destination,min(sizeof(current_position),sizeof(destination))); }
+inline void set_destination_from_current() { memcpy(destination,current_position,min(sizeof(destination),sizeof(current_position))); }
+void prepare_move_to_destination();
+
+
+
+
+void do_blocking_move_to(const float &x, const float &y, const float &z, const float &fr_mm_s=0.0);
+void do_blocking_move_to_x(const float &x, const float &fr_mm_s=0.0);
+void do_blocking_move_to_z(const float &z, const float &fr_mm_s=0.0);
+void do_blocking_move_to_xy(const float &x, const float &y, const float &fr_mm_s=0.0);
+# 489 "./Marlin.h"
+  bool axis_unhomed_error(const bool x=true, const bool y=true, const bool z=true);
+# 528 "./Marlin.h"
+  inline bool position_is_reachable(const float &rx, const float &ry) {
+
+      return ((rx) >= (0 - 0.001) && (rx) <= (590 + 0.001))
+          && ((ry) >= (0 - 0.001) && (ry) <= (610 + 0.001));
+  }
+
+  inline bool position_is_reachable_by_probe(const float &rx, const float &ry) {
+
+      return ((rx) >= ((max((((590) / 2) - (590) / 2), 0 + 0)) - 0.001) && (rx) <= ((min((((590) / 2) + (590) / 2), 590 + 0)) + 0.001))
+          && ((ry) >= ((max((((610) / 2) - (610) / 2), 0 + 0)) - 0.001) && (ry) <= ((min((((610) / 2) + (610) / 2), 610 + 0)) + 0.001));
+  }
+# 24 "watchdog.cpp" 2
+
+
+
+# 1 "./watchdog.h" 1
+# 27 "./watchdog.h"
+# 1 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/wdt.h" 1
+# 450 "/Users/mstewart/Downloads/Arduino.app/Contents/Java/hardware/tools/avr/avr/include/avr/wdt.h"
+static __inline__
+__attribute__ ((__always_inline__))
+void wdt_enable (const uint8_t value)
+{
+ if ((((uint16_t) &(WDT)) < 0x40 + 0x20))
+ {
+  __asm__ __volatile__ (
+    "in __tmp_reg__,__SREG__" "\n\t"
+    "cli" "\n\t"
+    "wdr" "\n\t"
+    "out %0, %1" "\n\t"
+    "out __SREG__,__tmp_reg__" "\n\t"
+    "out %0, %2" "\n \t"
+    :
+    : "I" ((((uint16_t) &(WDT)) - 0x20)),
+    "r" ((uint8_t)((1 << (WDCE)) | (1 << (WDE)))),
+    "r" ((uint8_t) ((value & 0x08 ? 0x00 : 0x00) |
+      (1 << (WDE)) | (value & 0x07)) )
+    : "r0"
+  );
+ }
+ else
+ {
+  __asm__ __volatile__ (
+    "in __tmp_reg__,__SREG__" "\n\t"
+    "cli" "\n\t"
+    "wdr" "\n\t"
+    "sts %0, %1" "\n\t"
+    "out __SREG__,__tmp_reg__" "\n\t"
+    "sts %0, %2" "\n \t"
+    :
+    : "n" (((uint16_t) &(WDT))),
+    "r" ((uint8_t)((1 << (WDCE)) | (1 << (WDE)))),
+    "r" ((uint8_t) ((value & 0x08 ? 0x00 : 0x00) |
+      (1 << (WDE)) | (value & 0x07)) )
+    : "r0"
+  );
+ }
+}
+
+static __inline__
+__attribute__ ((__always_inline__))
+void wdt_disable (void)
+{
+ if ((((uint16_t) &(WDT)) < 0x40 + 0x20))
+ {
+        uint8_t register temp_reg;
+  __asm__ __volatile__ (
+    "in __tmp_reg__,__SREG__" "\n\t"
+    "cli" "\n\t"
+    "wdr" "\n\t"
+    "in  %[TEMPREG],%[WDTREG]" "\n\t"
+    "ori %[TEMPREG],%[WDCE_WDE]" "\n\t"
+    "out %[WDTREG],%[TEMPREG]" "\n\t"
+    "out %[WDTREG],__zero_reg__" "\n\t"
+    "out __SREG__,__tmp_reg__" "\n\t"
+    : [TEMPREG] "=d" (temp_reg)
+    : [WDTREG] "I" ((((uint16_t) &(WDT)) - 0x20)),
+    [WDCE_WDE] "n" ((uint8_t)((1 << (WDCE)) | (1 << (WDE))))
+    : "r0"
+  );
+ }
+ else
+ {
+        uint8_t register temp_reg;
+  __asm__ __volatile__ (
+    "in __tmp_reg__,__SREG__" "\n\t"
+    "cli" "\n\t"
+    "wdr" "\n\t"
+    "lds %[TEMPREG],%[WDTREG]" "\n\t"
+    "ori %[TEMPREG],%[WDCE_WDE]" "\n\t"
+    "sts %[WDTREG],%[TEMPREG]" "\n\t"
+    "sts %[WDTREG],__zero_reg__" "\n\t"
+    "out __SREG__,__tmp_reg__" "\n\t"
+    : [TEMPREG] "=d" (temp_reg)
+    : [WDTREG] "n" (((uint16_t) &(WDT))),
+    [WDCE_WDE] "n" ((uint8_t)((1 << (WDCE)) | (1 << (WDE))))
+    : "r0"
+  );
+ }
+}
+# 28 "./watchdog.h" 2
+
+
+void watchdog_init();
+
+
+
+inline void watchdog_reset() { __asm__ __volatile__ ("wdr"); }
+# 28 "watchdog.cpp" 2
+
+
+void watchdog_init() {
+# 48 "watchdog.cpp"
+    wdt_enable(WDTO_4S);
+
+
+}
