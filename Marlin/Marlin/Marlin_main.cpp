@@ -3040,6 +3040,8 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
 
 static void homeaxis(const AxisEnum axis) {
 
+	int tmp_extruder= active_extruder;
+	active_extruder=0;
   #if IS_SCARA
     // Only Z homing (with probe) is permitted
     if (axis != Z_AXIS) { BUZZ(100, 880); return; }
@@ -3201,6 +3203,7 @@ static void homeaxis(const AxisEnum axis) {
       SERIAL_EOL();
     }
   #endif
+  active_extruder = tmp_extruder;
 } // homeaxis()
 
 #if ENABLED(MIXING_EXTRUDER)
@@ -10562,6 +10565,7 @@ inline void gcode_M502() {
       wait_for_filament_reload(beep_count);
     #if ENABLED(HOME_AFTER_FILAMENT_CHANGE)
       // Don't allow resume without homing first
+      //gcode_G28(false,true,true);
     //  HOMEAXIS(X);
     //  HOMEAXIS(Y);
     #endif
