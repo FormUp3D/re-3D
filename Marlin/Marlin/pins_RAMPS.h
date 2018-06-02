@@ -457,7 +457,7 @@
 
       #define DOGLCD_CS         45
       #define DOGLCD_A0         44
-      #define LCD_SCREEN_ROT_180
+      //#define LCD_SCREEN_ROT_180
 
       #define BEEPER_PIN        33
       #define STAT_LED_RED_PIN  64//32
