@@ -8,8 +8,8 @@
 
 #define STRINGIFY_MACRO(x) STR(x)
 #define STR(x) #x
-#define EXPAND(x) x //What does Expand do?
-#define CONCAT(n1, n2) STRINGIFY_MACRO(EXPAND(n1)EXPAND(n2)) 
+#define EXPAND(x) x
+#define CONCAT(n1, n2) STRINGIFY_MACRO(EXPAND(n1)EXPAND(n2))
 #define CONCAT3(n1, n2, n3) STRINGIFY_MACRO(EXPAND(n1)EXPAND(n2)EXPAND(n3))
 #define CONCAT5(n1, n2, n3, n4, n5) STRINGIFY_MACRO(EXPAND(n1)EXPAND(n2)EXPAND(n3)EXPAND(n4)EXPAND(n5))
 #define CONCAT_(a, b) a ## b

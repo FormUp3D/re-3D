@@ -1,4 +1,3 @@
-/**
  * Marlin 3D Printer Firmware
  * Copyright (C) 2016, 2017 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
  *
@@ -3039,7 +3038,6 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
 #define HOMEAXIS(LETTER) homeaxis(LETTER##_AXIS)
 
 static void homeaxis(const AxisEnum axis) {
-
 
   #if IS_SCARA
     // Only Z homing (with probe) is permitted
@@ -6990,20 +6988,12 @@ inline void gcode_M17() {
     // If resume_position is negative
     if (resume_position[E_AXIS] < 0) do_pause_e_move(resume_position[E_AXIS], PAUSE_PARK_RETRACT_FEEDRATE);
 
-	if(active_extruder==0){
-		// Move XY to starting position, then Z
-		do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
+    // Move XY to starting position, then Z
+    do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
 
-		// Set Z_AXIS to saved position
-		do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
-	}
-	else{
-		// Move XY to starting position, then Z
-		do_blocking_move_to_xy((resume_position[X_AXIS]+hotend_offset[X_AXIS][active_extruder]), (resume_position[Y_AXIS]+hotend_offset[Y_AXIS][active_extruder]), NOZZLE_PARK_XY_FEEDRATE);
+    // Set Z_AXIS to saved position
+    do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
 
-		// Set Z_AXIS to saved position
-		do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
-	}
     // Now all extrusion positions are resumed and ready to be confirmed
     // Set extruder to saved position
     planner.set_e_position_mm((destination[E_AXIS] = current_position[E_AXIS] = resume_position[E_AXIS]));
@@ -10581,8 +10571,7 @@ inline void gcode_M502() {
     #if EXTRUDERS > 1
       // Restore toolhead if it was changed
       if (active_extruder_before_filament_change != active_extruder)
-        //tool_change(active_extruder_before_filament_change, 0, true);
-		tool_change(active_extruder_before_filament_change,0,true);
+        tool_change(active_extruder_before_filament_change, 0, true);
     #endif
 
     // Resume the print job timer if it was running
