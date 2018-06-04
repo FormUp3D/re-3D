@@ -1,0 +1,1069 @@
+diff --git a/.DS_Store b/.DS_Store
+deleted file mode 100644
+index 6f9f8b1..0000000
+Binary files a/.DS_Store and /dev/null differ
+diff --git a/Marlin/Marlin.zip b/Marlin/Marlin.zip
+deleted file mode 100644
+index f08ca20..0000000
+Binary files a/Marlin/Marlin.zip and /dev/null differ
+diff --git a/Marlin/Marlin/Conditionals_LCD.h b/Marlin/Marlin/Conditionals_LCD.h
+index 51da173..33ab517 100644
+--- a/Marlin/Marlin/Conditionals_LCD.h
++++ b/Marlin/Marlin/Conditionals_LCD.h
+@@ -77,15 +77,13 @@
+ //      #define U8GLIB_ST7565_64128N
+     #elif ENABLED(VIKI2)
+       #define LCD_CONTRAST_MIN       0
+-      #define LCD_CONTRAST_MAX     255//75//255
+-      #define DEFAULT_LCD_CONTRAST 140//35//140
+-
+-      #define U8GLIB_ST7565_64128N
+-      #define ST7565_DELAY_1 DELAY_0_NOP
+-      #define ST7565_DELAY_2 DELAY_1_NOP
+-      #define ST7565_DELAY_3 DELAY_2_NOP
+-	  
+-	  
++      #define LCD_CONTRAST_MAX     75//255
++      #define DEFAULT_LCD_CONTRAST 35//140
++      //#define U8GLIB_ST7565_64128N
++//      #define U8GLIB_ST7565_64128N
++  #define ST7565_DELAY_1 DELAY_0_NOP
++  #define ST7565_DELAY_2 DELAY_1_NOP
++  #define ST7565_DELAY_3 DELAY_2_NOP
+     #elif ENABLED(ELB_FULL_GRAPHIC_CONTROLLER)
+       #define LCD_CONTRAST_MIN      90
+       #define LCD_CONTRAST_MAX     130
+diff --git a/Marlin/Marlin/Marlin_main.cpp b/Marlin/Marlin/Marlin_main.cpp
+index 1536e1a..e60b84d 100644
+--- a/Marlin/Marlin/Marlin_main.cpp
++++ b/Marlin/Marlin/Marlin_main.cpp
+@@ -3040,7 +3040,6 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
+ 
+ static void homeaxis(const AxisEnum axis) {
+ 
+-
+   #if IS_SCARA
+     // Only Z homing (with probe) is permitted
+     if (axis != Z_AXIS) { BUZZ(100, 880); return; }
+@@ -6990,20 +6989,12 @@ inline void gcode_M17() {
+     // If resume_position is negative
+     if (resume_position[E_AXIS] < 0) do_pause_e_move(resume_position[E_AXIS], PAUSE_PARK_RETRACT_FEEDRATE);
+ 
+-	if(active_extruder==0){
+-		// Move XY to starting position, then Z
+-		do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
++    // Move XY to starting position, then Z
++    do_blocking_move_to_xy(resume_position[X_AXIS], resume_position[Y_AXIS], NOZZLE_PARK_XY_FEEDRATE);
+ 
+-		// Set Z_AXIS to saved position
+-		do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
+-	}
+-	else{
+-		// Move XY to starting position, then Z
+-		do_blocking_move_to_xy((resume_position[X_AXIS]+hotend_offset[X_AXIS][active_extruder]), (resume_position[Y_AXIS]+hotend_offset[Y_AXIS][active_extruder]), NOZZLE_PARK_XY_FEEDRATE);
++    // Set Z_AXIS to saved position
++    do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
+ 
+-		// Set Z_AXIS to saved position
+-		do_blocking_move_to_z(resume_position[Z_AXIS], NOZZLE_PARK_Z_FEEDRATE);
+-	}
+     // Now all extrusion positions are resumed and ready to be confirmed
+     // Set extruder to saved position
+     planner.set_e_position_mm((destination[E_AXIS] = current_position[E_AXIS] = resume_position[E_AXIS]));
+@@ -10519,7 +10510,7 @@ inline void gcode_M502() {
+       // Don't allow filament change without homing first
+       if (axis_unhomed_error()) home_all_axes();
+     #endif
+-	
++
+     #if EXTRUDERS > 1
+       // Change toolhead if specified
+       uint8_t active_extruder_before_filament_change = active_extruder;
+@@ -10571,7 +10562,6 @@ inline void gcode_M502() {
+       wait_for_filament_reload(beep_count);
+     #if ENABLED(HOME_AFTER_FILAMENT_CHANGE)
+       // Don't allow resume without homing first
+-      //gcode_G28(false,true,true);
+     //  HOMEAXIS(X);
+     //  HOMEAXIS(Y);
+     #endif
+@@ -10581,8 +10571,7 @@ inline void gcode_M502() {
+     #if EXTRUDERS > 1
+       // Restore toolhead if it was changed
+       if (active_extruder_before_filament_change != active_extruder)
+-        //tool_change(active_extruder_before_filament_change, 0, true);
+-		tool_change(active_extruder_before_filament_change,0,true);
++        tool_change(active_extruder_before_filament_change, 0, true);
+     #endif
+ 
+     // Resume the print job timer if it was running
+diff --git a/Marlin/Marlin/endstops.cpp b/Marlin/Marlin/endstops.cpp
+index 96c4c70..f51a11b 100644
+--- a/Marlin/Marlin/endstops.cpp
++++ b/Marlin/Marlin/endstops.cpp
+@@ -270,10 +270,6 @@ void Endstops::M119() {
+   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+     SERIAL_PROTOCOLPGM(MSG_FILAMENT_RUNOUT_SENSOR);
+     SERIAL_PROTOCOLLN(((READ(FIL_RUNOUT_PIN)^FIL_RUNOUT_INVERTING) ? MSG_ENDSTOP_HIT : MSG_ENDSTOP_OPEN));
+-    #if NUM_RUNOUT_SENSORS>1
+-      SERIAL_PROTOCOLPGM(MSG_FILAMENT_RUNOUT_SENSOR2);
+-      SERIAL_PROTOCOLLN(((READ(FIL_RUNOUT2_PIN)^FIL_RUNOUT_INVERTING) ? MSG_ENDSTOP_HIT : MSG_ENDSTOP_OPEN));
+-    #endif
+   #endif
+ } // Endstops::M119
+ 
+diff --git a/Marlin/Marlin/gigabot.h b/Marlin/Marlin/gigabot.h
+index 0760813..568ef51 100644
+--- a/Marlin/Marlin/gigabot.h
++++ b/Marlin/Marlin/gigabot.h
+@@ -4,14 +4,6 @@
+ // separating them into sections
+ //
+ 
+-#define MSG_GIGABOT3 "Gigabot 3+"
+-#define GIGA_BUILD_VERSION "4.2.0"
+-#undef STRING_DISTRIBUTION_DATE
+-#define STRING_DISTRIBUTION_DATE "2018-06-11"
+-#undef WEBSITE_URL
+-#define WEBSITE_URL "https://re3d.org"
+-
+-
+ #if SYSTEM_SECTION == INFO
+   #undef  STRING_CONFIG_H_AUTHOR
+ //  #define STRING_CONFIG_H_AUTHOR "(GB3 V4.x.x - Marlin 1.1.8)"
+@@ -35,9 +27,6 @@
+   #undef  TEMP_HYSTERESIS
+ 
+   #define TEMP_HYSTERESIS 4       // (degC) range of +/- temperatures considered "close" to the target one
+-
+-  #undef  WATCH_BED_TEMP_PERIOD
+-  #define WATCH_BED_TEMP_PERIOD 125            // Seconds
+ #endif
+ 
+ #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 1)
+@@ -104,11 +93,6 @@
+   #endif
+ #endif
+ 
+-#if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 2)
+-  #undef  EXTRUDE_MINTEMP
+-  #define EXTRUDE_MINTEMP 120
+-#endif
+-  
+ #if SYSTEM_SECTION == SUBSECTION(HOMING, 1)
+   #undef  USE_XMIN_PLUG
+   #undef  USE_YMIN_PLUG
+@@ -142,7 +126,6 @@
+ #endif
+ 
+ #if SYSTEM_SECTION == SUBSECTION(HOMING, 2)
+-  #undef Y_HOME_DIR
+   #define Y_HOME_DIR 1
+ #endif
+ 
+@@ -197,7 +180,7 @@
+   #define Y_BED_SIZE   610
+   #define Z_MAX_POS    609
+   
+-  #undef FILAMENT_RUNOUT_SENSOR 
++  #undef FILAMENT_RUNOUT_SENSOR //Undefine then define again
+ 
+   #define ADVANCED_PAUSE_FEATURE
+   #define NOZZLE_PARK_FEATURE
+@@ -239,16 +222,10 @@
+   #undef  PREHEAT_2_TEMP_HOTEND
+   #undef  PREHEAT_2_TEMP_BED
+ 
+-  #define PREHEAT_1_TEMP_HOTEND 200
++  #define PREHEAT_1_TEMP_HOTEND 160
+   #define PREHEAT_1_TEMP_BED     60
+-  #define PREHEAT_2_TEMP_HOTEND 250
+-  #define PREHEAT_2_TEMP_BED    115
+-  
+-  #define PRINTCOUNTER
+-  
+-  #if ENABLED(NOZZLE_PARK_FEATURE)
+-	#define NOZZLE_PARK_POINT { (X_MIN_POS + 500), (Y_MAX_POS - 10), 20 }
+-  #endif
++  #define PREHEAT_2_TEMP_HOTEND 220
++  #define PREHEAT_2_TEMP_BED     95
+ #endif
+ 
+ #if SYSTEM_SECTION == SUBSECTION(LCD, 1)
+@@ -261,36 +238,14 @@
+   #define SPI_SPEED SPI_QUARTER_SPEED
+   #define SD_CHECK_AND_RETRY
+   #define VIKI2
+-  
+-  #if ENABLED(SDSUPPORT)
+-	#define SDCARD_RATHERRECENTFIRST
+-	//#define SDCARD_SORT_ALPHA
+-    #if ENABLED(SDCARD_SORT_ALPHA)
+-	   #define SDSORT_LIMIT       40
+-	#endif
+-  #endif //sdsupport
+-
+-  #define LCD_INFO_MENU
+-  #define LCD_TIMEOUT_TO_STATUS 120000
+-  #define LIN_ADVANCE
+ #endif
+ 
+ #define ULTRA_LCD  //general LCD support, also 16x2
+     #define DOGLCD  // Support for SPI LCD 128x64 (Controller ST7565R graphic Display Family)
+     #define ULTIMAKERCONTROLLER 
+-      #define LCD_CONTRAST_MIN     0
+-      #define LCD_CONTRAST_MAX     255//75//255
+-      #define DEFAULT_LCD_CONTRAST 140//35//140
+-
+-#if SYSTEM_SECTION == SUBSECTION(SERIAL_BUF, 1)
+-  #undef FILAMENT_CHANGE_UNLOAD_FEEDRATE
+-  #undef ADVANCED_PAUSE_PURGE_FEEDRATE
+-  #undef PAUSE_PARK_NOZZLE_TIMEOUT 
+-
+-	#define FILAMENT_CHANGE_UNLOAD_FEEDRATE     15  // (mm/s) Unload filament feedrate. This can be pretty fast.
+-	#define ADVANCED_PAUSE_PURGE_FEEDRATE        1.5  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+-	#define PAUSE_PARK_NOZZLE_TIMEOUT           240  // (seconds) Time limit before the nozzle is turned off for safety.
+-#endif
++      #define LCD_CONTRAST_MIN       0
++      #define LCD_CONTRAST_MAX     75//255
++      #define DEFAULT_LCD_CONTRAST 35//140
+ 
+ #if SYSTEM_SECTION == SUBSECTION(LCD, 2)
+   #if ENABLED(ULTIPANEL)
+@@ -359,15 +314,6 @@
+   #define AD8495_FORMULA (5.0 * 100.0) / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
+ #endif
+ 
+-#if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 4)
+-  #undef  INVERT_E0_DIR 
+-  #undef  INVERT_E1_DIR
+-  
+-  #define INVERT_E0_DIR true
+-  #define INVERT_E1_DIR false
+-#endif
+-  
+-
+ #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 5)
+   #undef  E0_AUTO_FAN_PIN 
+   #undef  E1_AUTO_FAN_PIN 
+@@ -375,8 +321,6 @@
+   #define E1_AUTO_FAN_PIN 16
+ #endif
+ 
+-#define ENDSTOPS_ALWAYS_ON_DEFAULT
+-
+ #if SYSTEM_SECTION == SUBSECTION(EXTRAS, 3)
+   #undef  Y_DUAL_STEPPER_DRIVERS
+   #undef  Z_DUAL_STEPPER_DRIVERS
+@@ -442,8 +386,7 @@
+ 
+ 
+   #define X_MAX_PIN         -1
+-  #define Y_MAX_PIN         15
+-  #define Y_MIN_PIN         14
++  #define Y_MAX_PIN         63//14
+ 
+   #undef  BEEPER_PIN
+   #define BEEPER_PIN        33         
+diff --git a/Marlin/Marlin/language.h b/Marlin/Marlin/language.h
+index 78cfe69..f16c724 100644
+--- a/Marlin/Marlin/language.h
++++ b/Marlin/Marlin/language.h
+@@ -112,7 +112,6 @@
+ // Common serial messages
+ #define MSG_MARLIN "Marlin"
+ 
+-
+ // Serial Console Messages (do not translate those!)
+ 
+ #define MSG_ENQUEUEING                      "enqueueing \""
+@@ -167,7 +166,6 @@
+ #define MSG_SKEW_MIN                        "min_skew_factor: "
+ #define MSG_SKEW_MAX                        "max_skew_factor: "
+ #define MSG_FILAMENT_RUNOUT_SENSOR          "filament: "
+-#define MSG_FILAMENT_RUNOUT_SENSOR2         "filament2: "
+ #define MSG_ERR_MATERIAL_INDEX              "M145 S<index> out of range (0-1)"
+ #define MSG_ERR_M355_NONE                   "No case light"
+ #define MSG_ERR_M421_PARAMETERS             "M421 incorrect parameter usage"
+diff --git a/Marlin/Marlin/language_en.h b/Marlin/Marlin/language_en.h
+index 888a7fb..99c007f 100644
+--- a/Marlin/Marlin/language_en.h
++++ b/Marlin/Marlin/language_en.h
+@@ -74,7 +74,7 @@
+   #define MSG_PROGRESS_BAR_TEST               _UxGT("Progress Bar Test")
+ #endif
+ #ifndef MSG_AUTO_HOME
+-  #define MSG_AUTO_HOME                       _UxGT("Home All")
++  #define MSG_AUTO_HOME                       _UxGT("Auto home")
+ #endif
+ #ifndef MSG_AUTO_HOME_X
+   #define MSG_AUTO_HOME_X                     _UxGT("Home X")
+@@ -82,9 +82,6 @@
+ #ifndef MSG_AUTO_HOME_Y
+   #define MSG_AUTO_HOME_Y                     _UxGT("Home Y")
+ #endif
+-#ifndef MSG_AUTO_HOME_XY
+-  #define MSG_AUTO_HOME_XY                     _UxGT("Home XY")
+-#endif
+ #ifndef MSG_AUTO_HOME_Z
+   #define MSG_AUTO_HOME_Z                     _UxGT("Home Z")
+ #endif
+diff --git a/Marlin/Marlin/pins_RAMPS.h b/Marlin/Marlin/pins_RAMPS.h
+index 80b594f..403efe8 100644
+--- a/Marlin/Marlin/pins_RAMPS.h
++++ b/Marlin/Marlin/pins_RAMPS.h
+@@ -457,7 +457,7 @@
+ 
+       #define DOGLCD_CS         45
+       #define DOGLCD_A0         44
+-      //#define LCD_SCREEN_ROT_180
++      #define LCD_SCREEN_ROT_180
+ 
+       #define BEEPER_PIN        33
+       #define STAT_LED_RED_PIN  64//32
+diff --git a/Marlin/Marlin/ultralcd.cpp b/Marlin/Marlin/ultralcd.cpp
+index 78dd60f..2e699a0 100644
+--- a/Marlin/Marlin/ultralcd.cpp
++++ b/Marlin/Marlin/ultralcd.cpp
+@@ -1113,10 +1113,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
+       MENU_ITEM(submenu, MSG_PREPARE, lcd_prepare_menu);
+     }
+     MENU_ITEM(submenu, MSG_CONTROL, lcd_control_menu);
+-	
+-	#if ENABLED(LCD_INFO_MENU)
+-      MENU_ITEM(submenu, MSG_INFO_MENU, lcd_info_menu);
+-    #endif
+ 
+     #if ENABLED(SDSUPPORT)
+       if (card.cardOK) {
+@@ -1142,6 +1138,10 @@ void lcd_quick_feedback(const bool clear_buttons) {
+       }
+     #endif // SDSUPPORT
+ 
++    #if ENABLED(LCD_INFO_MENU)
++      MENU_ITEM(submenu, MSG_INFO_MENU, lcd_info_menu);
++    #endif
++
+     #if ENABLED(LED_CONTROL_MENU)
+       MENU_ITEM(submenu, MSG_LED_CONTROL, lcd_led_menu);
+     #endif
+@@ -2676,52 +2676,23 @@ void lcd_quick_feedback(const bool clear_buttons) {
+     //
+     MENU_BACK(MSG_MAIN);
+ 
+-    //
+-    // Preheat for Material 1 and 2
+-    //
+-    #if HAS_TEMP_HOTEND	
+-      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
+-        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
+-        MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
+-      #else
+-        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
+-        MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
+-      #endif
+-    #endif // HAS_TEMP_HOTEND	
+-    //
+-    // Change filament
+-    //
+-    #if ENABLED(ADVANCED_PAUSE_FEATURE)
+-      if (!IS_SD_FILE_OPEN) {
+-        #if E_STEPPERS == 1 && !ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+-          if (thermalManager.targetHotEnoughToExtrude(active_extruder))
+-            MENU_ITEM(gcode, MSG_FILAMENTCHANGE, PSTR("M600 B0"));
+-          else
+-            MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_temp_menu_e0_filament_change);
+-        #else
+-          MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
+-        #endif
+-      }
+-    #endif // ADVANCED_PAUSE_FEATURE
+-	
+     //
+     // Move Axis
+     //
+     #if ENABLED(DELTA)
+       if (axis_homed[X_AXIS] && axis_homed[Y_AXIS] && axis_homed[Z_AXIS])
+     #endif
+-    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
++        MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+ 
+     //
+     // Auto Home
+     //
++    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+     #if ENABLED(INDIVIDUAL_AXIS_HOMING_MENU)
+-      //MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
+-      //MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
+-	  MENU_ITEM(gcode, MSG_AUTO_HOME_XY, PSTR("G28 X Y"));
++      MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
++      MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
+       MENU_ITEM(gcode, MSG_AUTO_HOME_Z, PSTR("G28 Z"));
+     #endif
+-	MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+ 
+     //
+     // Level Bed
+@@ -2784,6 +2755,21 @@ void lcd_quick_feedback(const bool clear_buttons) {
+     //
+     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+ 
++    //
++    // Change filament
++    //
++    #if ENABLED(ADVANCED_PAUSE_FEATURE)
++      if (!IS_SD_FILE_OPEN) {
++        #if E_STEPPERS == 1 && !ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
++          if (thermalManager.targetHotEnoughToExtrude(active_extruder))
++            MENU_ITEM(gcode, MSG_FILAMENTCHANGE, PSTR("M600 B0"));
++          else
++            MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_temp_menu_e0_filament_change);
++        #else
++          MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
++        #endif
++      }
++    #endif // ADVANCED_PAUSE_FEATURE
+ 
+     #if HAS_TEMP_HOTEND
+ 
+@@ -2797,6 +2783,16 @@ void lcd_quick_feedback(const bool clear_buttons) {
+       #endif
+       if (has_heat) MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
+ 
++      //
++      // Preheat for Material 1 and 2
++      //
++      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
++        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
++        MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
++      #else
++        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
++        MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
++      #endif
+ 
+     #endif // HAS_TEMP_HOTEND
+ 
+@@ -3295,8 +3291,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
+     #endif
+ 
+     //MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_get_e_amount);
+-    MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E1, lcd_move_get_e0_amount);
+     #if E_MANUAL > 1
++      MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E1, lcd_move_get_e0_amount);
+       MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E2, lcd_move_get_e1_amount);
+       #if E_MANUAL > 2
+         MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E3, lcd_move_get_e2_amount);
+@@ -4189,14 +4185,12 @@ void lcd_quick_feedback(const bool clear_buttons) {
+     void lcd_info_printer_menu() {
+       if (use_click()) { return lcd_goto_previous_menu(); }
+       START_SCREEN();
+-      //STATIC_ITEM(MSG_MARLIN, true, true);                             // Marlin
+-	  STATIC_ITEM(MSG_GIGABOT3, true, true);
+-      //STATIC_ITEM(SHORT_BUILD_VERSION, true);                          // x.x.x-Branch
+-	  STATIC_ITEM(GIGA_BUILD_VERSION, true);
++      STATIC_ITEM(MSG_MARLIN, true, true);                             // Marlin
++      STATIC_ITEM(SHORT_BUILD_VERSION, true);                          // x.x.x-Branch
+       STATIC_ITEM(STRING_DISTRIBUTION_DATE, true);                     // YYYY-MM-DD HH:MM
+-      //STATIC_ITEM(MACHINE_NAME, true);                                 // My3DPrinter
++      STATIC_ITEM(MACHINE_NAME, true);                                 // My3DPrinter
+       STATIC_ITEM(WEBSITE_URL, true);                                  // www.my3dprinter.com
+-      //STATIC_ITEM(MSG_INFO_EXTRUDERS ": " STRINGIFY(EXTRUDERS), true); // Extruders: 2
++      STATIC_ITEM(MSG_INFO_EXTRUDERS ": " STRINGIFY(EXTRUDERS), true); // Extruders: 2
+       #if ENABLED(AUTO_BED_LEVELING_3POINT)
+         STATIC_ITEM(MSG_3POINT_LEVELING, true);                        // 3-Point Leveling
+       #elif ENABLED(AUTO_BED_LEVELING_LINEAR)
+diff --git a/Marlin/Marlin/ultralcd_st7565_u8glib_VIKI.h b/Marlin/Marlin/ultralcd_st7565_u8glib_VIKI.h
+index cbcd6be..734fccf 100644
+--- a/Marlin/Marlin/ultralcd_st7565_u8glib_VIKI.h
++++ b/Marlin/Marlin/ultralcd_st7565_u8glib_VIKI.h
+@@ -148,9 +148,9 @@ uint8_t u8g_dev_st7565_64128n_2x_VIKI_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg
+       ST7565_NCS();                     /* enable chip */
+ 
+       ST7565_WRITE_BYTE(0x0A2);         /* 0x0A2: LCD bias 1/9 (according to Displaytech 64128N datasheet) */
+-      ST7565_WRITE_BYTE(0x0A1);         /* Normal ADC Select (according to Displaytech 64128N datasheet) */
++      ST7565_WRITE_BYTE(0x0A0);         /* Normal ADC Select (according to Displaytech 64128N datasheet) */
+ 
+-      ST7565_WRITE_BYTE(0x0C0);         /* common output mode: set scan direction normal operation/SHL Select; 0x0C0 --> SHL = 0; normal; 0x0C8 --> SHL = 1 */
++      ST7565_WRITE_BYTE(0x0C8);         /* common output mode: set scan direction normal operation/SHL Select; 0x0C0 --> SHL = 0; normal; 0x0C8 --> SHL = 1 */
+       ST7565_WRITE_BYTE(0x040);         /* Display start line for Displaytech 64128N */
+ 
+       ST7565_WRITE_BYTE(0x028 | 0x04);  /* power control: turn on voltage converter */
+diff --git a/patch1.patch b/patch1.patch
+deleted file mode 100644
+index 7324fec..0000000
+--- a/patch1.patch
++++ /dev/null
+@@ -1,310 +0,0 @@
+-diff --git a/Marlin/Marlin/Marlin_main.cpp b/Marlin/Marlin/Marlin_main.cpp
+-index e60b84d..5b73353 100644
+---- a/Marlin/Marlin/Marlin_main.cpp
+-+++ b/Marlin/Marlin/Marlin_main.cpp
+-@@ -3040,6 +3040,8 @@ static void do_homing_move(const AxisEnum axis, const float distance, const floa
+- 
+- static void homeaxis(const AxisEnum axis) {
+- 
+-+	int tmp_extruder= active_extruder;
+-+	active_extruder=0;
+-   #if IS_SCARA
+-     // Only Z homing (with probe) is permitted
+-     if (axis != Z_AXIS) { BUZZ(100, 880); return; }
+-@@ -3201,6 +3203,7 @@ static void homeaxis(const AxisEnum axis) {
+-       SERIAL_EOL();
+-     }
+-   #endif
+-+  active_extruder = tmp_extruder;
+- } // homeaxis()
+- 
+- #if ENABLED(MIXING_EXTRUDER)
+-@@ -10562,6 +10565,7 @@ inline void gcode_M502() {
+-       wait_for_filament_reload(beep_count);
+-     #if ENABLED(HOME_AFTER_FILAMENT_CHANGE)
+-       // Don't allow resume without homing first
+-+      //gcode_G28(false,true,true);
+-     //  HOMEAXIS(X);
+-     //  HOMEAXIS(Y);
+-     #endif
+-diff --git a/Marlin/Marlin/endstops.cpp b/Marlin/Marlin/endstops.cpp
+-index f51a11b..96c4c70 100644
+---- a/Marlin/Marlin/endstops.cpp
+-+++ b/Marlin/Marlin/endstops.cpp
+-@@ -270,6 +270,10 @@ void Endstops::M119() {
+-   #if ENABLED(FILAMENT_RUNOUT_SENSOR)
+-     SERIAL_PROTOCOLPGM(MSG_FILAMENT_RUNOUT_SENSOR);
+-     SERIAL_PROTOCOLLN(((READ(FIL_RUNOUT_PIN)^FIL_RUNOUT_INVERTING) ? MSG_ENDSTOP_HIT : MSG_ENDSTOP_OPEN));
+-+    #if NUM_RUNOUT_SENSORS>1
+-+      SERIAL_PROTOCOLPGM(MSG_FILAMENT_RUNOUT_SENSOR2);
+-+      SERIAL_PROTOCOLLN(((READ(FIL_RUNOUT2_PIN)^FIL_RUNOUT_INVERTING) ? MSG_ENDSTOP_HIT : MSG_ENDSTOP_OPEN));
+-+    #endif
+-   #endif
+- } // Endstops::M119
+- 
+-diff --git a/Marlin/Marlin/gigabot.h b/Marlin/Marlin/gigabot.h
+-index 568ef51..a932cc6 100644
+---- a/Marlin/Marlin/gigabot.h
+-+++ b/Marlin/Marlin/gigabot.h
+-@@ -93,6 +93,11 @@
+-   #endif
+- #endif
+- 
+-+#if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 2)
+-+  #undef  EXTRUDE_MINTEMP
+-+  #define EXTRUDE_MINTEMP 120
+-+#endif
+-+  
+- #if SYSTEM_SECTION == SUBSECTION(HOMING, 1)
+-   #undef  USE_XMIN_PLUG
+-   #undef  USE_YMIN_PLUG
+-@@ -126,6 +131,7 @@
+- #endif
+- 
+- #if SYSTEM_SECTION == SUBSECTION(HOMING, 2)
+-+  #undef Y_HOME_DIR
+-   #define Y_HOME_DIR 1
+- #endif
+- 
+-@@ -180,7 +186,7 @@
+-   #define Y_BED_SIZE   610
+-   #define Z_MAX_POS    609
+-   
+--  #undef FILAMENT_RUNOUT_SENSOR //Undefine then define again
+-+  #undef FILAMENT_RUNOUT_SENSOR 
+- 
+-   #define ADVANCED_PAUSE_FEATURE
+-   #define NOZZLE_PARK_FEATURE
+-@@ -222,10 +228,15 @@
+-   #undef  PREHEAT_2_TEMP_HOTEND
+-   #undef  PREHEAT_2_TEMP_BED
+- 
+--  #define PREHEAT_1_TEMP_HOTEND 160
+-+  #define PREHEAT_1_TEMP_HOTEND 200
+-   #define PREHEAT_1_TEMP_BED     60
+--  #define PREHEAT_2_TEMP_HOTEND 220
+--  #define PREHEAT_2_TEMP_BED     95
+-+  #define PREHEAT_2_TEMP_HOTEND 250
+-+  #define PREHEAT_2_TEMP_BED    115
+-+  
+-+  
+-+  #if ENABLED(NOZZLE_PARK_FEATURE)
+-+	#define NOZZLE_PARK_POINT { (X_MIN_POS + 500), (Y_MAX_POS - 10), 20 }
+-+  #endif
+- #endif
+- 
+- #if SYSTEM_SECTION == SUBSECTION(LCD, 1)
+-@@ -238,6 +249,16 @@
+-   #define SPI_SPEED SPI_QUARTER_SPEED
+-   #define SD_CHECK_AND_RETRY
+-   #define VIKI2
+-+  
+-+  #if ENABLED(SDSUPPORT)
+-+	#define SDCARD_RATHERRECENTFIRST
+-+	//#define SDCARD_SORT_ALPHA
+-+    #if ENABLED(SDCARD_SORT_ALPHA)
+-+	   #define SDSORT_LIMIT       40
+-+	#endif
+-+  #endif //sdsupport
+-+  
+-+  #define LIN_ADVANCE
+- #endif
+- 
+- #define ULTRA_LCD  //general LCD support, also 16x2
+-@@ -247,6 +268,16 @@
+-       #define LCD_CONTRAST_MAX     75//255
+-       #define DEFAULT_LCD_CONTRAST 35//140
+- 
+-+#if SYSTEM_SECTION == SUBSECTION(SERIAL_BUF, 1)
+-+  #undef FILAMENT_CHANGE_UNLOAD_FEEDRATE
+-+  #undef ADVANCED_PAUSE_PURGE_FEEDRATE
+-+  #undef PAUSE_PARK_NOZZLE_TIMEOUT 
+-+
+-+	#define FILAMENT_CHANGE_UNLOAD_FEEDRATE     15  // (mm/s) Unload filament feedrate. This can be pretty fast.
+-+	#define ADVANCED_PAUSE_PURGE_FEEDRATE        1.5  // (mm/s) Extrude feedrate (after loading). Should be slower than load feedrate.
+-+	#define PAUSE_PARK_NOZZLE_TIMEOUT           180  // (seconds) Time limit before the nozzle is turned off for safety.
+-+#endif
+-+
+- #if SYSTEM_SECTION == SUBSECTION(LCD, 2)
+-   #if ENABLED(ULTIPANEL)
+-  //   #undef  MANUAL_FEEDRATE
+-@@ -314,6 +345,15 @@
+-   #define AD8495_FORMULA (5.0 * 100.0) / 1024.0 / (OVERSAMPLENR) * (TEMP_SENSOR_AD8495_GAIN) + TEMP_SENSOR_AD8495_OFFSET
+- #endif
+- 
+-+#if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 4)
+-+  #undef  INVERT_E0_DIR 
+-+  #undef  INVERT_E1_DIR
+-+  
+-+  #define INVERT_E0_DIR true
+-+  #define INVERT_E1_DIR false
+-+#endif
+-+  
+-+
+- #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 5)
+-   #undef  E0_AUTO_FAN_PIN 
+-   #undef  E1_AUTO_FAN_PIN 
+-@@ -321,6 +361,8 @@
+-   #define E1_AUTO_FAN_PIN 16
+- #endif
+- 
+-+#define ENDSTOPS_ALWAYS_ON_DEFAULT
+-+
+- #if SYSTEM_SECTION == SUBSECTION(EXTRAS, 3)
+-   #undef  Y_DUAL_STEPPER_DRIVERS
+-   #undef  Z_DUAL_STEPPER_DRIVERS
+-@@ -386,7 +428,8 @@
+- 
+- 
+-   #define X_MAX_PIN         -1
+--  #define Y_MAX_PIN         63//14
+-+  #define Y_MAX_PIN         15
+-+  #define Y_MIN_PIN         14
+- 
+-   #undef  BEEPER_PIN
+-   #define BEEPER_PIN        33         
+-diff --git a/Marlin/Marlin/language.h b/Marlin/Marlin/language.h
+-index f16c724..1eebb66 100644
+---- a/Marlin/Marlin/language.h
+-+++ b/Marlin/Marlin/language.h
+-@@ -166,6 +166,7 @@
+- #define MSG_SKEW_MIN                        "min_skew_factor: "
+- #define MSG_SKEW_MAX                        "max_skew_factor: "
+- #define MSG_FILAMENT_RUNOUT_SENSOR          "filament: "
+-+#define MSG_FILAMENT_RUNOUT_SENSOR2         "filament2: "
+- #define MSG_ERR_MATERIAL_INDEX              "M145 S<index> out of range (0-1)"
+- #define MSG_ERR_M355_NONE                   "No case light"
+- #define MSG_ERR_M421_PARAMETERS             "M421 incorrect parameter usage"
+-diff --git a/Marlin/Marlin/language_en.h b/Marlin/Marlin/language_en.h
+-index 99c007f..888a7fb 100644
+---- a/Marlin/Marlin/language_en.h
+-+++ b/Marlin/Marlin/language_en.h
+-@@ -74,7 +74,7 @@
+-   #define MSG_PROGRESS_BAR_TEST               _UxGT("Progress Bar Test")
+- #endif
+- #ifndef MSG_AUTO_HOME
+--  #define MSG_AUTO_HOME                       _UxGT("Auto home")
+-+  #define MSG_AUTO_HOME                       _UxGT("Home All")
+- #endif
+- #ifndef MSG_AUTO_HOME_X
+-   #define MSG_AUTO_HOME_X                     _UxGT("Home X")
+-@@ -82,6 +82,9 @@
+- #ifndef MSG_AUTO_HOME_Y
+-   #define MSG_AUTO_HOME_Y                     _UxGT("Home Y")
+- #endif
+-+#ifndef MSG_AUTO_HOME_XY
+-+  #define MSG_AUTO_HOME_XY                     _UxGT("Home XY")
+-+#endif
+- #ifndef MSG_AUTO_HOME_Z
+-   #define MSG_AUTO_HOME_Z                     _UxGT("Home Z")
+- #endif
+-diff --git a/Marlin/Marlin/ultralcd.cpp b/Marlin/Marlin/ultralcd.cpp
+-index 2e699a0..6ba297b 100644
+---- a/Marlin/Marlin/ultralcd.cpp
+-+++ b/Marlin/Marlin/ultralcd.cpp
+-@@ -2676,23 +2676,52 @@ void lcd_quick_feedback(const bool clear_buttons) {
+-     //
+-     MENU_BACK(MSG_MAIN);
+- 
+-+    //
+-+    // Preheat for Material 1 and 2
+-+    //
+-+    #if HAS_TEMP_HOTEND	
+-+      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
+-+        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
+-+        MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
+-+      #else
+-+        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
+-+        MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
+-+      #endif
+-+    #endif // HAS_TEMP_HOTEND	
+-+    //
+-+    // Change filament
+-+    //
+-+    #if ENABLED(ADVANCED_PAUSE_FEATURE)
+-+      if (!IS_SD_FILE_OPEN) {
+-+        #if E_STEPPERS == 1 && !ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+-+          if (thermalManager.targetHotEnoughToExtrude(active_extruder))
+-+            MENU_ITEM(gcode, MSG_FILAMENTCHANGE, PSTR("M600 B0"));
+-+          else
+-+            MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_temp_menu_e0_filament_change);
+-+        #else
+-+          MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
+-+        #endif
+-+      }
+-+    #endif // ADVANCED_PAUSE_FEATURE
+-+	
+-     //
+-     // Move Axis
+-     //
+-     #if ENABLED(DELTA)
+-       if (axis_homed[X_AXIS] && axis_homed[Y_AXIS] && axis_homed[Z_AXIS])
+-     #endif
+--        MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+-+    MENU_ITEM(submenu, MSG_MOVE_AXIS, lcd_move_menu);
+- 
+-     //
+-     // Auto Home
+-     //
+--    MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+-     #if ENABLED(INDIVIDUAL_AXIS_HOMING_MENU)
+--      MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
+--      MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
+-+      //MENU_ITEM(gcode, MSG_AUTO_HOME_X, PSTR("G28 X"));
+-+      //MENU_ITEM(gcode, MSG_AUTO_HOME_Y, PSTR("G28 Y"));
+-+	  MENU_ITEM(gcode, MSG_AUTO_HOME_XY, PSTR("G28 X Y"));
+-       MENU_ITEM(gcode, MSG_AUTO_HOME_Z, PSTR("G28 Z"));
+-     #endif
+-+	MENU_ITEM(gcode, MSG_AUTO_HOME, PSTR("G28"));
+- 
+-     //
+-     // Level Bed
+-@@ -2755,21 +2784,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
+-     //
+-     MENU_ITEM(gcode, MSG_DISABLE_STEPPERS, PSTR("M84"));
+- 
+--    //
+--    // Change filament
+--    //
+--    #if ENABLED(ADVANCED_PAUSE_FEATURE)
+--      if (!IS_SD_FILE_OPEN) {
+--        #if E_STEPPERS == 1 && !ENABLED(FILAMENT_LOAD_UNLOAD_GCODES)
+--          if (thermalManager.targetHotEnoughToExtrude(active_extruder))
+--            MENU_ITEM(gcode, MSG_FILAMENTCHANGE, PSTR("M600 B0"));
+--          else
+--            MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_temp_menu_e0_filament_change);
+--        #else
+--          MENU_ITEM(submenu, MSG_FILAMENTCHANGE, lcd_change_filament_menu);
+--        #endif
+--      }
+--    #endif // ADVANCED_PAUSE_FEATURE
+- 
+-     #if HAS_TEMP_HOTEND
+- 
+-@@ -2783,16 +2797,6 @@ void lcd_quick_feedback(const bool clear_buttons) {
+-       #endif
+-       if (has_heat) MENU_ITEM(function, MSG_COOLDOWN, lcd_cooldown);
+- 
+--      //
+--      // Preheat for Material 1 and 2
+--      //
+--      #if TEMP_SENSOR_1 != 0 || TEMP_SENSOR_2 != 0 || TEMP_SENSOR_3 != 0 || TEMP_SENSOR_4 != 0 || HAS_HEATED_BED
+--        MENU_ITEM(submenu, MSG_PREHEAT_1, lcd_preheat_m1_menu);
+--        MENU_ITEM(submenu, MSG_PREHEAT_2, lcd_preheat_m2_menu);
+--      #else
+--        MENU_ITEM(function, MSG_PREHEAT_1, lcd_preheat_m1_e0_only);
+--        MENU_ITEM(function, MSG_PREHEAT_2, lcd_preheat_m2_e0_only);
+--      #endif
+- 
+-     #endif // HAS_TEMP_HOTEND
+- 
+-@@ -3291,8 +3295,8 @@ void lcd_quick_feedback(const bool clear_buttons) {
+-     #endif
+- 
+-     //MENU_ITEM(submenu, MSG_MOVE_E, lcd_move_get_e_amount);
+-+    MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E1, lcd_move_get_e0_amount);
+-     #if E_MANUAL > 1
+--      MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E1, lcd_move_get_e0_amount);
+-       MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E2, lcd_move_get_e1_amount);
+-       #if E_MANUAL > 2
+-         MENU_ITEM(submenu, MSG_MOVE_E MSG_MOVE_E3, lcd_move_get_e2_amount);
+diff --git a/ultralcd_st7565_u8glib_VIKI.h b/ultralcd_st7565_u8glib_VIKI.h
+deleted file mode 100644
+index 734fccf..0000000
+--- a/ultralcd_st7565_u8glib_VIKI.h
++++ /dev/null
+@@ -1,257 +0,0 @@
+-/**
+- * Marlin 3D Printer Firmware
+- * Copyright (C) 2016, 2017 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+- *
+- * Based on Sprinter and grbl.
+- * Copyright (C) 2011 Camiel Gubbels / Erik van der Zalm
+- *
+- * This program is free software: you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation, either version 3 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+- *
+- */
+-
+-#ifndef ULCDST7565_H
+-#define ULCDST7565_H
+-
+-#include <U8glib.h>
+-
+-#define ST7565_CLK_PIN  DOGLCD_SCK
+-#define ST7565_DAT_PIN  DOGLCD_MOSI
+-#define ST7565_CS_PIN   DOGLCD_CS
+-#define ST7565_A0_PIN   DOGLCD_A0
+-
+-#define LCD_PIXEL_WIDTH 128
+-#define LCD_PIXEL_HEIGHT 64
+-#define PAGE_HEIGHT 8
+-
+-//set optimization so ARDUINO optimizes this file
+-#pragma GCC optimize (3)
+-
+-// If you want you can define your own set of delays in Configuration.h
+-//#define ST7565_DELAY_1 DELAY_0_NOP
+-//#define ST7565_DELAY_2 DELAY_0_NOP
+-//#define ST7565_DELAY_3 DELAY_0_NOP
+-
+-/*
+-#define ST7565_DELAY_1 u8g_10MicroDelay()
+-#define ST7565_DELAY_2 u8g_10MicroDelay()
+-#define ST7565_DELAY_3 u8g_10MicroDelay()
+-*/
+-
+-#if F_CPU >= 20000000
+-  #define CPU_ST7565_DELAY_1 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_2 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_3 DELAY_1_NOP
+-#elif MB(3DRAG) || MB(K8200) || MB(K8400)
+-  #define CPU_ST7565_DELAY_1 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_2 DELAY_3_NOP
+-  #define CPU_ST7565_DELAY_3 DELAY_0_NOP
+-#elif MB(MINIRAMBO)
+-  #define CPU_ST7565_DELAY_1 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_2 DELAY_4_NOP
+-  #define CPU_ST7565_DELAY_3 DELAY_0_NOP
+-#elif MB(RAMBO)
+-  #define CPU_ST7565_DELAY_1 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_2 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_3 DELAY_0_NOP
+-#elif F_CPU == 16000000
+-  #define CPU_ST7565_DELAY_1 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_2 DELAY_0_NOP
+-  #define CPU_ST7565_DELAY_3 DELAY_1_NOP
+-#else
+-  #error "No valid condition for delays in 'ultralcd_st7565_u8glib_VIKI.h'"
+-#endif
+-
+-#ifndef ST7565_DELAY_1
+-  #define ST7565_DELAY_1 CPU_ST7565_DELAY_1
+-#endif
+-#ifndef ST7565_DELAY_2
+-  #define ST7565_DELAY_2 CPU_ST7565_DELAY_2
+-#endif
+-#ifndef ST7565_DELAY_3
+-  #define ST7565_DELAY_3 CPU_ST7565_DELAY_3
+-#endif
+-
+-// On Viki2 the LCD and the SD card share a single SPI
+-#define HARDWARE_SPI ((DOGLCD_SCK == SCK_PIN) && (DOGLCD_MOSI == MOSI_PIN))
+-
+-#if HARDWARE_SPI  // using the hardware SPI
+-
+-  #define ST7565_WRITE_BYTE(a)                 { SPDR = a; while (!TEST(SPSR, SPIF)); U8G_DELAY(); }
+-  #define ST7560_WriteSequence(count, pointer) { uint8_t *ptr = pointer; for (uint8_t i = 0; i <  count; i++) {SPDR = *ptr++; while (!TEST(SPSR, SPIF));} DELAY_10US; }
+-
+-#else // !HARDWARE_SPI
+-
+-  #define ST7565_SND_BIT \
+-    WRITE(ST7565_CLK_PIN, LOW);        ST7565_DELAY_1; \
+-    WRITE(ST7565_DAT_PIN, val & 0x80); ST7565_DELAY_2; \
+-    WRITE(ST7565_CLK_PIN, HIGH);       ST7565_DELAY_3; \
+-    WRITE(ST7565_CLK_PIN, LOW);\
+-    val <<= 1
+-
+-  static void ST7565_SWSPI_SND_8BIT(uint8_t val) {
+-    ST7565_SND_BIT; // 1
+-    ST7565_SND_BIT; // 2
+-    ST7565_SND_BIT; // 3
+-    ST7565_SND_BIT; // 4
+-    ST7565_SND_BIT; // 5
+-    ST7565_SND_BIT; // 6
+-    ST7565_SND_BIT; // 7
+-    ST7565_SND_BIT; // 8
+-  }
+-
+-  #define ST7565_WRITE_BYTE(a)                 { ST7565_SWSPI_SND_8BIT((uint8_t)a); U8G_DELAY(); }
+-  #define ST7560_WriteSequence(count, pointer) { uint8_t *ptr = pointer; for (uint8_t i = 0; i < count; i++) { ST7565_SWSPI_SND_8BIT(*ptr++); } DELAY_10US; }
+-
+-#endif // !HARDWARE_SPI
+-
+-#if defined(DOGM_SPI_DELAY_US) && DOGM_SPI_DELAY_US > 0
+-  #define U8G_DELAY() delayMicroseconds(DOGM_SPI_DELAY_US)
+-#else
+-  #define U8G_DELAY() u8g_10MicroDelay()
+-#endif
+-
+-#define ST7565_CS()   { WRITE(ST7565_CS_PIN,1); U8G_DELAY(); }
+-#define ST7565_NCS()  { WRITE(ST7565_CS_PIN,0); }
+-#define ST7565_A0()   { WRITE(ST7565_A0_PIN,1); U8G_DELAY(); }
+-#define ST7565_NA0()  { WRITE(ST7565_A0_PIN,0); }
+-
+-uint8_t u8g_dev_st7565_64128n_2x_VIKI_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
+-  switch (msg) {
+-
+-    case U8G_DEV_MSG_INIT: {
+-
+-      OUT_WRITE(ST7565_CS_PIN, LOW);
+-      OUT_WRITE(ST7565_DAT_PIN, LOW);
+-      OUT_WRITE(ST7565_CLK_PIN, LOW);
+-
+-      #if HARDWARE_SPI
+-        OUT_WRITE(SDSS, 1);  // must be set to an output first or else will never go into master mode
+-        SPCR = 0x50;  // enable SPI in master mode at fast speed
+-        SPSR = 1;  // kick it up to 2x speed mode
+-      #endif
+-
+-      OUT_WRITE(ST7565_A0_PIN, LOW);
+-
+-      ST7565_CS();                      /* disable chip */
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_NCS();                     /* enable chip */
+-
+-      ST7565_WRITE_BYTE(0x0A2);         /* 0x0A2: LCD bias 1/9 (according to Displaytech 64128N datasheet) */
+-      ST7565_WRITE_BYTE(0x0A0);         /* Normal ADC Select (according to Displaytech 64128N datasheet) */
+-
+-      ST7565_WRITE_BYTE(0x0C8);         /* common output mode: set scan direction normal operation/SHL Select; 0x0C0 --> SHL = 0; normal; 0x0C8 --> SHL = 1 */
+-      ST7565_WRITE_BYTE(0x040);         /* Display start line for Displaytech 64128N */
+-
+-      ST7565_WRITE_BYTE(0x028 | 0x04);  /* power control: turn on voltage converter */
+-      //U8G_ESC_DLY(50);                /* delay 50 ms - hangs after a reset if used */
+-
+-      ST7565_WRITE_BYTE(0x028 | 0x06);  /* power control: turn on voltage regulator */
+-      //U8G_ESC_DLY(50);                /* delay 50 ms - hangs after a reset if used */
+-
+-      ST7565_WRITE_BYTE(0x028 | 0x07);  /* power control: turn on voltage follower */
+-      //U8G_ESC_DLY(50);                /* delay 50 ms - hangs after a reset if used */
+-
+-      ST7565_WRITE_BYTE(0x010);         /* Set V0 voltage resistor ratio. Setting for controlling brightness of Displaytech 64128N */
+-
+-      ST7565_WRITE_BYTE(0x0A6);         /* display normal, bit val 0: LCD pixel off. */
+-
+-      ST7565_WRITE_BYTE(0x081);         /* set contrast */
+-      ST7565_WRITE_BYTE(0x01E);         /* Contrast value. Setting for controlling brightness of Displaytech 64128N */
+-
+-      ST7565_WRITE_BYTE(0x0AF);         /* display on */
+-
+-      U8G_ESC_DLY(100);                 /* delay 100 ms */
+-      ST7565_WRITE_BYTE(0x0A5);         /* display all points; ST7565 */
+-      U8G_ESC_DLY(100);                 /* delay 100 ms */
+-      U8G_ESC_DLY(100);                 /* delay 100 ms */
+-      ST7565_WRITE_BYTE(0x0A4);         /* normal display */
+-      ST7565_CS();                      /* disable chip */
+-    }                                   /* end of sequence */
+-    break;
+-
+-    case U8G_DEV_MSG_STOP: break;
+-
+-    case U8G_DEV_MSG_PAGE_NEXT: {
+-      u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
+-      ST7565_CS();                      /* disable chip */
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_NCS();                     /* enable chip */
+-      ST7565_WRITE_BYTE(0x010);         /* set upper 4 bit of the col adr to 0x10 */
+-      ST7565_WRITE_BYTE(0x004);         /* set lower 4 bit of the col adr to 0x00. Changed for DisplayTech 64128N */
+-                                        /* end of sequence */
+-      ST7565_WRITE_BYTE(0x0B0 | (2*pb->p.page));; /* select current page (ST7565R) */
+-      ST7565_A0();                      /* data mode */
+-      ST7560_WriteSequence( (uint8_t) pb->width, (uint8_t *)pb->buf);
+-      ST7565_CS();                      /* disable chip */
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_NCS();                     /* enable chip */
+-      ST7565_WRITE_BYTE(0x010);         /* set upper 4 bit of the col adr to 0x10 */
+-      ST7565_WRITE_BYTE(0x004);         /* set lower 4 bit of the col adr to 0x00. Changed for DisplayTech 64128N */
+-                                        /* end of sequence */
+-      ST7565_WRITE_BYTE(0x0B0 | (2*pb->p.page+1)); /* select current page (ST7565R) */
+-      ST7565_A0();                      /* data mode */
+-      ST7560_WriteSequence( (uint8_t) pb->width, (uint8_t *)(pb->buf)+pb->width);
+-      ST7565_CS();                      /* disable chip */
+-    }
+-    break;
+-
+-    case U8G_DEV_MSG_CONTRAST:
+-      ST7565_NCS();
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_WRITE_BYTE(0x081);
+-      ST7565_WRITE_BYTE((*(uint8_t *)arg) >> 2);
+-      ST7565_CS();                      /* disable chip */
+-      return 1;
+-
+-    case U8G_DEV_MSG_SLEEP_ON:
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_NCS();                     /* enable chip */
+-      ST7565_WRITE_BYTE(0x0AC);         /* static indicator off */
+-      ST7565_WRITE_BYTE(0x000);         /* indicator register set (not sure if this is required) */
+-      ST7565_WRITE_BYTE(0x0AE);         /* display off */
+-      ST7565_WRITE_BYTE(0x0A5);         /* all points on */
+-      ST7565_CS();                      /* disable chip , bugfix 12 nov 2014 */
+-                                        /* end of sequence */
+-      return 1;
+-
+-    case U8G_DEV_MSG_SLEEP_OFF:
+-      ST7565_NA0();                     /* instruction mode */
+-      ST7565_NCS();                     /* enable chip */
+-      ST7565_WRITE_BYTE(0x0A4);         /* all points off */
+-      ST7565_WRITE_BYTE(0x0AF);         /* display on */
+-      U8G_ESC_DLY(50);                  /* delay 50 ms */
+-      ST7565_CS();                      /* disable chip ,  bugfix 12 nov 2014 */
+-                                        /* end of sequence */
+-      return 1;
+-  }
+-  return u8g_dev_pb16v1_base_fn(u8g, dev, msg, arg);
+-}
+-
+-uint8_t u8g_dev_st7565_64128n_2x_VIKI_buf[LCD_PIXEL_WIDTH*2] U8G_NOCOMMON;
+-u8g_pb_t u8g_dev_st7565_64128n_2x_VIKI_pb = {{16, LCD_PIXEL_HEIGHT, 0, 0, 0}, LCD_PIXEL_WIDTH, u8g_dev_st7565_64128n_2x_VIKI_buf};
+-u8g_dev_t u8g_dev_st7565_64128n_2x_VIKI_sw_spi = {u8g_dev_st7565_64128n_2x_VIKI_fn, &u8g_dev_st7565_64128n_2x_VIKI_pb, &u8g_com_null_fn};
+-
+-class U8GLIB_ST7565_64128n_2x_VIKI : public U8GLIB {
+-  public:
+-  U8GLIB_ST7565_64128n_2x_VIKI(uint8_t dummy)
+-    : U8GLIB(&u8g_dev_st7565_64128n_2x_VIKI_sw_spi)
+-    {  }
+-  U8GLIB_ST7565_64128n_2x_VIKI(uint8_t sck, uint8_t mosi, uint8_t cs, uint8_t a0, uint8_t reset = U8G_PIN_NONE)
+-    : U8GLIB(&u8g_dev_st7565_64128n_2x_VIKI_sw_spi)
+-    {  }
+-};
+-
+-#pragma GCC reset_options
+-
+-#endif // ULCDST7565_H

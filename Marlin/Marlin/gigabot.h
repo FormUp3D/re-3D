@@ -38,6 +38,7 @@
 
   #undef  WATCH_BED_TEMP_PERIOD
   #define WATCH_BED_TEMP_PERIOD 125            // Seconds
+  
 #endif
 
 #if SYSTEM_SECTION == SUBSECTION(EXTRUDER, 1)
@@ -148,7 +149,6 @@
 
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 3)
   #define MANUAL_X_HOME_POS 0
-  //#define MANUAL_Y_HOME_POS 0
   #define MANUAL_Z_HOME_POS 0
   #define MANUAL_Y_HOME_POS Y_MAX_POS
 #endif
@@ -156,6 +156,7 @@
 #if SYSTEM_SECTION == SUBSECTION(HOMING, 4)
   #define X_HOME_BUMP_MM 5
   #define Y_HOME_BUMP_MM 5
+  #undef HOMING_BUMP_DIVISOR
   #define HOMING_BUMP_DIVISOR { 20, 20, 5 }  // Re-Bump Speed Divisor (Divides the Homing Feedrate)
 #endif
 
@@ -261,6 +262,7 @@
   #define SPI_SPEED SPI_QUARTER_SPEED
   #define SD_CHECK_AND_RETRY
   #define VIKI2
+  #define INDIVIDUAL_AXIS_HOMING_MENU
   
   #if ENABLED(SDSUPPORT)
 	#define SDCARD_RATHERRECENTFIRST
@@ -383,12 +385,13 @@
 
   #define Y_DUAL_STEPPER_DRIVERS true
   #define Z_DUAL_STEPPER_DRIVERS true
-  //#define Y_DUAL_ENDSTOPS        true
-  //#define Y2_USE_ENDSTOP         true
+  #define Y_DUAL_ENDSTOPS        true
+  #define Y2_USE_ENDSTOP         true
 
   #define Y_DUAL_STEPPER_DRIVERS
   #if ENABLED(Y_DUAL_STEPPER_DRIVERS)
-    #define INVERT_Y2_VS_Y_DIR true // Set 'true' if Y motors should rotate in opposite directions
+    #undef INVERT_Y2_VS_Y_DIR
+    #define INVERT_Y2_VS_Y_DIR true  // Set 'true' if Y motors should rotate in opposite directions
     #define Y_DUAL_ENDSTOPS
     #if ENABLED(Y_DUAL_ENDSTOPS)
       #define Y2_USE_ENDSTOP _YMIN_ 
